@@ -11,7 +11,7 @@ export default function Header() {
 
       {/* 메뉴 */}
       <nav className="flex gap-4">
-        <Link to="/login" className="hover:text-blue-500">Login</Link>
+        <Link to="/signin" className="hover:text-blue-500">로그인</Link>
       </nav>
     </header>
   );
