@@ -34,12 +34,14 @@ export default function SignUp() {
         body: JSON.stringify(payload),
       });
 
+      const data = await res.json().catch(() => null); // JSON 파싱 시도
+
       if (!res.ok) {
-        alert(data?.message || "회원가입 중 오류가 발생했습니다.");
+        setErrorMsg(data?.message || "회원가입 중 오류가 발생했습니다.");
         return;
       }
 
-      alert("회원가입이 완료되었습니다!");
+      alert("가입이 완료되었습니다. 로그인하신 후 서비스를 계속 이용하실 수 있습니다.");
       navigate("/signin");
     } catch (err) {
       alert("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
