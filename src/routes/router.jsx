@@ -5,8 +5,9 @@ import Home from "../pages";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import Activity from "../pages/Activity";
+import CompanyActivity from "../pages/company/Activity";
 import CompanyHome from "../pages/company";
-import AdminHome from "../pages/admin"; // 새로 추가
+import AdminHome from "../pages/admin";
 
 export const router = createBrowserRouter([
   {
@@ -15,9 +16,13 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "signin", element: <SignIn /> },
       { path: "signup", element: <SignUp /> },
-      // { path: "activity", element: <Activity /> },
+
+      { path: "activity", element: <Activity /> },
+
       { path: "company", element: <CompanyHome /> },
-      // { path: "admin", element: <AdminHome /> },
+      { path: "company/activity", element: <CompanyActivity /> },
+
+      { path: "admin", element: <AdminHome /> },
     ],
   },
 ]);

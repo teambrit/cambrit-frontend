@@ -5,7 +5,7 @@ export default function HeaderUser() {
   const navigate = useNavigate();
 
   return (
-    <header className="w-full flex justify-between items-center px-6 py-3 shadow-md bg-white">
+    <header className="w-full flex justify-between items-center px-6 py-3 shadow bg-white">
       {/* 로고 */}
       <Link to="/" className="text-xl font-bold text-blue-600">
         CamBrit
@@ -16,7 +16,7 @@ export default function HeaderUser() {
         {isLoggedIn() ? (
           <button
             onClick={() => logout(navigate)}
-            className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
+            className="hover:text-blue-500"
           >
             로그아웃
           </button>
