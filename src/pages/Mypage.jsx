@@ -1,4 +1,5 @@
 import { useState } from "react";
+import defaultProfile from "../assets/default-user.png"; // 기본 프로필 이미지
 
 export default function MyPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -9,7 +10,8 @@ export default function MyPage() {
     university: "서울대학교",
     major: "컴퓨터공학과",
     bio: "프론트엔드 개발에 관심이 많은 학생입니다.",
-    verified: true, // 인증 여부
+    verified: false, // 인증 여부
+    profileImage: "", // 프로필 이미지
   });
   const [uploadFile, setUploadFile] = useState(null);
 
@@ -28,9 +30,19 @@ export default function MyPage() {
     }
   };
 
+  const handleProfileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setStudentInfo((prev) => ({
+        ...prev,
+        profileImage: imageUrl,
+      }));
+    }
+  };
+
   const handleSave = async () => {
     try {
-      // TODO: API 연결
       console.log("저장 요청:", studentInfo);
       setIsEditing(false);
       alert("프로필이 수정되었습니다.");
@@ -45,11 +57,11 @@ export default function MyPage() {
       <main className="max-w-3xl mx-auto px-6 py-10">
         {/* 학생 인증 상태 섹션 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">학생 인증 상태</h2>
+          <h2 className="text-2xl font-bold text-gray-900text-gray-900 mb-4 ">학생 인증 상태</h2>
 
           {studentInfo.verified ? (
             <div className="flex items-center gap-2 text-green-600 font-medium">
-              ✅ 인증 완료
+              인증 완료
             </div>
           ) : (
             <div>
@@ -77,7 +89,6 @@ export default function MyPage() {
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900">내 프로필</h2>
 
-            {/* 수정/저장 버튼 그룹 */}
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
@@ -103,6 +114,27 @@ export default function MyPage() {
             )}
           </div>
 
+          {/* 프로필 이미지 */}
+          <div className="flex flex-col items-center mb-8">
+            <img
+              src={studentInfo.profileImage || defaultProfile}
+              alt="프로필 이미지"
+              className="w-28 h-28 rounded-full object-cover border"
+            />
+            {isEditing && (
+              <label className="mt-3 bg-gray-100 px-3 py-1 rounded-md cursor-pointer text-sm text-gray-700 hover:bg-gray-200">
+                이미지 변경
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfileImageChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
+
+          {/* 나머지 정보 */}
           <div className="space-y-6">
             {/* 이메일 */}
             <div>
@@ -153,7 +185,7 @@ export default function MyPage() {
               )}
             </div>
 
-            {/* 대학교 (인증 후 수정 불가) */}
+            {/* 대학교 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 대학교
@@ -177,7 +209,7 @@ export default function MyPage() {
               )}
             </div>
 
-            {/* 전공 (인증 후 수정 불가) */}
+            {/* 전공 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 전공

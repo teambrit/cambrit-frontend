@@ -38,9 +38,7 @@ export default function HeaderCompany() {
     current: location.pathname === item.href,
   }));
 
-  // 현재 페이지 이름 가져오기
   const currentPage = navigation.find((item) => item.current);
-  const headerTitle = currentPage ? currentPage.name : "Dashboard";
 
   return (
     <div className="min-h-full">
@@ -189,15 +187,6 @@ export default function HeaderCompany() {
           </div>
         </DisclosurePanel>
       </Disclosure>
-
-      {/* 동적으로 바뀌는 헤더 */}
-      <header className="relative bg-white shadow">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            {headerTitle}
-          </h1>
-        </div>
-      </header>
     </div>
   );
 }
