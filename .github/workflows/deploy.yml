@@ -3,11 +3,6 @@ name: Deploy Vite to S3
 on:
   push:
     branches: [ "main" ]   # 배포 브랜치에 맞게 수정
-
-permissions:
-  id-token: write   # OIDC용
-  contents: read
-
 env:
   AWS_REGION: ap-northeast-2            # 서울 리전 예시
   S3_BUCKET: campus-bridge           # 버킷명
