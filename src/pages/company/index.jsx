@@ -1,5 +1,6 @@
 import { useState } from "react";
-import defaultLogo from "../../assets/default-company.png"; // 기본 이미지 경로
+import defaultLogo from "../../assets/default-company.png";
+import defaultThumbnail from "../../assets/default-company-thumbnail.png";
 
 export default function CompanyHome() {
   const [isEditing, setIsEditing] = useState(false);
@@ -7,6 +8,7 @@ export default function CompanyHome() {
     name: "캠브릿 주식회사",
     businessNumber: "123-45-67890",
     profileImage: "",
+    thumbnailImage: "",
     url: "https://www.cambrit.co.kr",
     description:
       "AI 및 클라우드 기술을 활용한 대학-기업 연계형 인재 매칭 플랫폼을 운영하는 기업입니다.",
@@ -24,13 +26,13 @@ export default function CompanyHome() {
     }));
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = (field, e) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setCompany((prev) => ({
         ...prev,
-        profileImage: imageUrl,
+        [field]: imageUrl,
       }));
     }
   };
@@ -56,7 +58,7 @@ export default function CompanyHome() {
       </div>
 
       {/* 회사 정보 섹션 */}
-      <div className="bg-white rounded-lg shadow-sm p-8">
+      <div className="bg-white rounded-lg shadow-sm">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">회사 정보</h2>
           {!isEditing ? (
@@ -84,6 +86,28 @@ export default function CompanyHome() {
           )}
         </div>
 
+         {/* 회사 썸네일 영역 */}
+        <div className="relative h-48 sm:h-64 rounded-lg overflow-hidden bg-gray-100 shadow-sm mb-10">
+          <img
+            src={company.thumbnailImage || defaultThumbnail}
+            alt="회사 썸네일"
+            className="h-full w-full object-cover"
+          />
+          {isEditing && (
+            <div className="absolute bottom-3 right-3">
+              <label className="bg-white/80 backdrop-blur px-3 py-1 rounded-md text-sm text-gray-700 cursor-pointer shadow hover:bg-white">
+                썸네일 변경
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload("thumbnailImage", e)}
+                  className="hidden"
+                />
+              </label>
+            </div>
+          )}
+        </div>
+
         <div className="flex items-start gap-8">
           {/* 회사 프로필 이미지 */}
           <div className="flex flex-col items-center">
@@ -94,11 +118,11 @@ export default function CompanyHome() {
             />
             {isEditing && (
               <label className="mt-3 bg-gray-100 px-3 py-1 rounded-md cursor-pointer text-sm text-gray-700 hover:bg-gray-200">
-                이미지 변경
+                로고 변경
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleImageUpload}
+                  onChange={(e) => handleImageUpload("profileImage", e)}
                   className="hidden"
                 />
               </label>
@@ -129,9 +153,7 @@ export default function CompanyHome() {
                 <input
                   type="text"
                   value={company.businessNumber}
-                  onChange={(e) =>
-                    handleInputChange("businessNumber", e.target.value)
-                  }
+                  onChange={(e) => handleInputChange("businessNumber", e.target.value)}
                   className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500"
                 />
               ) : (

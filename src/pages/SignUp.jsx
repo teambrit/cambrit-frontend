@@ -189,7 +189,7 @@ export default function SignUp() {
 
           {/* 회원가입 버튼 */}
           <button
-            type="button" // 🔥 form submit 방지
+            type="button" // form submit 방지
             onClick={handleSubmit}
             disabled={loading}
             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"

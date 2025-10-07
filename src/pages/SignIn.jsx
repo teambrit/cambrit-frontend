@@ -42,7 +42,7 @@ export default function SignIn() {
 
       const token = text;
       localStorage.setItem("token", token);
-      localStorage.setItem("role", memberType); // TODO: 서버에서 받은 값으로 세팅
+      localStorage.setItem("role", memberType);
 
       // 로그인 후 페이지 이동
       if (memberType === "student") navigate("/");

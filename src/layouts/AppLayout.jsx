@@ -5,10 +5,7 @@ import HeaderAdmin from "../components/HeaderAdmin";
 
 export default function AppLayout() {
   const location = useLocation();
-  let role = localStorage.getItem("role");
-
-  // 기본 role 없으면 student
-  if (!role) role = "student";
+  const role = localStorage.getItem("role") || "student";
 
   const isCompanyPage = location.pathname.startsWith("/company");
   const isAdminPage = location.pathname.startsWith("/admin");
@@ -24,10 +21,15 @@ export default function AppLayout() {
     return <Navigate to="/" replace />;
   }
 
-  // 헤더 선택
-  let header = <HeaderUser />;
-  if (role === "company") header = <HeaderCompany />;
-  if (role === "admin") header = <HeaderAdmin />;
+  // 헤더 분기
+  let header;
+  if (isAdminPage) {
+    header = <HeaderAdmin />;
+  } else if (isCompanyPage) {
+    header = <HeaderCompany />;
+  } else {
+    header = <HeaderUser />;
+  }
 
   return (
     <div className="min-h-screen">
