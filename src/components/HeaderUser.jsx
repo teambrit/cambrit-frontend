@@ -12,14 +12,19 @@ export default function HeaderUser() {
       </Link>
 
       {/* 메뉴 */}
-      <nav className="flex gap-4">
+      <nav className="flex gap-4 items-center">
         {isLoggedIn() ? (
-          <button
-            onClick={() => logout(navigate)}
-            className="hover:text-blue-500"
-          >
-            로그아웃
-          </button>
+          <>
+            <Link to="/mypage" className="hover:text-blue-500">
+              마이페이지
+            </Link>
+            <button
+              onClick={() => logout(navigate)}
+              className="hover:text-blue-500"
+            >
+              로그아웃
+            </button>
+          </>
         ) : (
           <Link to="/signin" className="hover:text-blue-500">
             로그인
