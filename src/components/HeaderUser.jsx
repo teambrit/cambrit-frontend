@@ -15,6 +15,9 @@ export default function HeaderUser() {
       <nav className="flex gap-4 items-center">
         {isLoggedIn() ? (
           <>
+            <Link to="/applications" className="hover:text-blue-500">
+              지원목록
+            </Link>
             <Link to="/mypage" className="hover:text-blue-500">
               마이페이지
             </Link>

@@ -1,11 +1,13 @@
+import { Link, useNavigate } from "react-router-dom";
+
 export default function CompanyActivity() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <div className="mb-6 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">구직공고 관리</h2>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-          새 공고 등록
-        </button>
+        <h2 className="text-2xl font-bold text-gray-900">활동 목록</h2>
+        <Link to="/company/activity/new" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+          새 활동 등록
+        </Link>
       </div>
 
       <div className="space-y-4">

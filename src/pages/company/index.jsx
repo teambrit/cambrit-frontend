@@ -1,5 +1,5 @@
 import { useState } from "react";
-import defaultLogo from "../../assets/default-company.png";
+import defaultLogo from "../../assets/default-company-logo.png";
 import defaultThumbnail from "../../assets/default-company-thumbnail.png";
 
 export default function CompanyHome() {
