@@ -7,7 +7,7 @@ export default function HeaderUser() {
   return (
     <header className="w-full flex justify-between items-center px-6 py-3 shadow bg-indigo-500">
       {/* 로고 */}
-      <Link to="/" className="text-xl font-bold text-blue-600">
+      <Link to="/" className="text-xl font-bold text-white">
         CamBrit
       </Link>
 
@@ -16,12 +16,12 @@ export default function HeaderUser() {
         {isLoggedIn() ? (
           <button
             onClick={() => logout(navigate)}
-            className="hover:text-blue-500"
+            className="text-white hover:text-blue-500"
           >
             로그아웃
           </button>
         ) : (
-          <Link to="/signin" className="hover:text-blue-500">
+          <Link to="/signin" className="text-white hover:text-blue-500">
             로그인
           </Link>
         )}

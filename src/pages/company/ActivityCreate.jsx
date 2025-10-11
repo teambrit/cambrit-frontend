@@ -30,7 +30,6 @@ export default function CompanyActivityCreate() {
       return;
     }
 
-    // ✅ 백엔드 요청 스펙에 맞는 payload 구성
     const payload = {
       title: form.title,
       body: form.body,
@@ -39,7 +38,7 @@ export default function CompanyActivityCreate() {
         .split(",")
         .map((tag) => tag.trim())
         .filter(Boolean),
-      applyDueDate: form.applyDueDate, // ✅ 필드명 변경 (dueDate → applyDueDate)
+      applyDueDate: form.applyDueDate,
       activityStartDate: form.activityStartDate || null,
       activityEndDate: form.activityEndDate || null,
     };
@@ -134,7 +133,7 @@ export default function CompanyActivityCreate() {
         {/* 태그 */}
         <div>
           <label className="block font-medium text-gray-700 mb-1">
-            활동 내용 (쉼표로 구분)
+            활동 태그 (쉼표로 구분)
           </label>
           <input
             type="text"
