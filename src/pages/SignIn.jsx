@@ -45,8 +45,9 @@ export default function SignIn() {
       localStorage.setItem("role", memberType);
 
       // 로그인 후 페이지 이동
-      if (memberType === "student") navigate("/");
-      else navigate("/company");
+      if (memberType === "company") navigate("/company");
+      else if (memberType === "admin") navigate("/admin");
+      else navigate("/");
     } catch (err) {
       console.error("네트워크 오류:", err);
       setErrorMsg("서버와 통신 중 오류가 발생했습니다.");
@@ -71,6 +72,7 @@ export default function SignIn() {
             {[
               { id: "student", label: "개인회원" },
               { id: "company", label: "기업회원" },
+              { id: "admin", label: "관리자" },
             ].map((item) => (
               <li
                 key={item.id}
