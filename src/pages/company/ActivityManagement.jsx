@@ -57,37 +57,39 @@ export default function CompanyActivityManagement() {
     }
   };
 
-  // 선택한 지원자 선발 확정 (로컬 업데이트 및 가능하면 백엔드 요청)
+  // 선택한 지원자 선발 확정 (각 지원자별로 상태 변경 API 호출)
   const handleConfirmSelection = async () => {
     if (selectedIds.length === 0) return alert("선택된 지원자가 없습니다.");
     if (!window.confirm(`${selectedIds.length}명의 지원자를 선발하시겠습니까?`)) return;
 
     try {
+      // 각 지원자별로 상태 변경 요청
+      await Promise.all(
+        selectedIds.map(async (applicationId) => {
+          const res = await fetch(
+            `${API_BASE_URL}/posting/applications/${applicationId}/status`,
+            {
+              method: "PUT", // 또는 POST, 백엔드 명세에 따라
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status: "APPROVED" }),
+            }
+          );
+          if (!res.ok) {
+            const text = await res.text();
+            console.warn(`지원자 ${applicationId} 선발 실패:`, text);
+          }
+        })
+      );
+
       // 시각적 처리: 로컬에서 선발 상태로 변경
       setApplicants((prev) =>
         prev.map((a) => (selectedIds.includes(a.id) ? { ...a, status: "APPROVED" } : a))
       );
-
-      // 백엔드에 선택 목록 전송 시도 (존재하면 처리, 없으면 무시)
-      const res = await fetch(`${API_BASE_URL}/posting/${id}/select`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ selectedIds }),
-      });
-
-      if (!res.ok) {
-        // 실패 시 경고는 표시하되 이미 로컬 상태는 업데이트됨
-        const text = await res.text();
-        console.warn("선발 전송 실패:", text);
-        alert("서버에 선발 요청 전송 중 오류가 발생했습니다.");
-      } else {
-        // 서버 성공 응답 시 선택 초기화
-        setSelectedIds([]);
-        alert("선발 처리가 완료되었습니다.");
-      }
+      setSelectedIds([]);
+      alert("선발 처리가 완료되었습니다.");
     } catch (err) {
       console.error(err);
       alert("선발 처리 중 오류가 발생했습니다.");
