@@ -66,11 +66,11 @@ export default function Activity() {
     }
 
     // 학생 인증 미완료
-    if (authStatus !== "APPROVED") {
-      alert("학생 인증이 필요합니다. 마이페이지로 이동합니다.");
-      navigate("/mypage");
-      return;
-    }
+    // if (authStatus !== "APPROVED") {
+    //   alert("학생 인증이 필요합니다. 마이페이지로 이동합니다.");
+    //   navigate("/mypage");
+    //   return;
+    // }
 
     // 인증 완료 → 지원 요청
     try {
