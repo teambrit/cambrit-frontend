@@ -7,6 +7,7 @@ export default function CompanyActivityManagement() {
   const [activity, setActivity] = useState(null);
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState([]);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -40,6 +41,58 @@ export default function CompanyActivityManagement() {
 
     if (id && token) fetchData();
   }, [id, token]);
+
+  // 체크박스 토글
+  const toggleSelect = (applicantId) => {
+    setSelectedIds((prev) =>
+      prev.includes(applicantId) ? prev.filter((i) => i !== applicantId) : [...prev, applicantId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === applicants.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(applicants.map((a) => a.id));
+    }
+  };
+
+  // 선택한 지원자 선발 확정 (로컬 업데이트 및 가능하면 백엔드 요청)
+  const handleConfirmSelection = async () => {
+    if (selectedIds.length === 0) return alert("선택된 지원자가 없습니다.");
+    if (!window.confirm(`${selectedIds.length}명의 지원자를 선발하시겠습니까?`)) return;
+
+    try {
+      // 시각적 처리: 로컬에서 선발 상태로 변경
+      setApplicants((prev) =>
+        prev.map((a) => (selectedIds.includes(a.id) ? { ...a, status: "APPROVED" } : a))
+      );
+
+      // 백엔드에 선택 목록 전송 시도 (존재하면 처리, 없으면 무시)
+      const res = await fetch(`${API_BASE_URL}/posting/${id}/select`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ selectedIds }),
+      });
+
+      if (!res.ok) {
+        // 실패 시 경고는 표시하되 이미 로컬 상태는 업데이트됨
+        const text = await res.text();
+        console.warn("선발 전송 실패:", text);
+        alert("서버에 선발 요청 전송 중 오류가 발생했습니다.");
+      } else {
+        // 서버 성공 응답 시 선택 초기화
+        setSelectedIds([]);
+        alert("선발 처리가 완료되었습니다.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("선발 처리 중 오류가 발생했습니다.");
+    }
+  };
 
   if (loading)
     return (
@@ -111,9 +164,18 @@ export default function CompanyActivityManagement() {
 
       {/* 지원자 목록 */}
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">
-          지원자 목록
-        </h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-xl font-semibold text-gray-900">지원자 목록</h3>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleConfirmSelection}
+              className={`bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 disabled:opacity-50`}
+              disabled={selectedIds.length === 0}
+            >
+              선발 확정 ({selectedIds.length})
+            </button>
+          </div>
+        </div>
 
         {applicants.length === 0 ? (
           <p className="text-gray-500 text-sm">지원자가 없습니다.</p>
@@ -121,6 +183,13 @@ export default function CompanyActivityManagement() {
           <table className="min-w-full border border-gray-200 text-sm">
             <thead className="bg-gray-100">
               <tr>
+                <th className="border px-4 py-2 text-left">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.length === applicants.length && applicants.length > 0}
+                    onChange={toggleSelectAll}
+                  />
+                </th>
                 <th className="border px-4 py-2 text-left">ID</th>
                 <th className="border px-4 py-2 text-left">이름</th>
                 <th className="border px-4 py-2 text-left">이메일</th>
@@ -131,6 +200,13 @@ export default function CompanyActivityManagement() {
             <tbody>
               {applicants.map((a) => (
                 <tr key={a.id} className="hover:bg-gray-50">
+                  <td className="border px-4 py-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(a.id)}
+                      onChange={() => toggleSelect(a.id)}
+                    />
+                  </td>
                   <td className="border px-4 py-2">{a.id}</td>
                   <td className="border px-4 py-2">{a.applicantName}</td>
                   <td className="border px-4 py-2">{a.applicantEmail}</td>
