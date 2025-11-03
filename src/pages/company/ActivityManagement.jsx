@@ -28,12 +28,12 @@ export default function CompanyActivityManagement() {
           `${API_BASE_URL}/posting/${id}/applications`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        if (!applicantRes.ok) throw new Error("지원자 목록을 불러올 수 없습니다.");
+        if (!applicantRes.ok) throw new Error("지원자 목록을 불러올 수 없습.");
         const applicantData = await applicantRes.json();
         setApplicants(applicantData);
       } catch (err) {
         console.error(err);
-        alert("정보를 불러오는 중 오류가 발생했다.");
+        alert("정보를 불러오는 중 오류가 발생했.");
       } finally {
         setLoading(false);
       }
