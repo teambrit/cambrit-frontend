@@ -22,45 +22,46 @@ export default function MyPage() {
   const token = localStorage.getItem("token");
 
   // 내 정보 & 인증 상태 가져오기
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const meRes = await fetch(`${API_BASE_URL}/user/me`, {
+  const fetchData = async () => {
+    try {
+      const meRes = await fetch(`${API_BASE_URL}/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!meRes.ok) throw new Error("내 정보 불러오기 실패");
+      const meData = await meRes.json();
+
+      const statusRes = await fetch(
+        `${API_BASE_URL}/user/student-authorization-request/status`,
+        {
           headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!meRes.ok) throw new Error("내 정보 불러오기 실패");
-        const meData = await meRes.json();
+        }
+      );
+      const status = statusRes.ok ? await statusRes.text() : "NONE";
+      setStatusText(status.replace(/['"\n\r]/g, "").trim().toUpperCase());
 
-        const statusRes = await fetch(
-          `${API_BASE_URL}/user/student-authorization-request/status`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const status = statusRes.ok ? await statusRes.text() : "NONE";
-        setStatusText(status.replace(/['"\n\r]/g, "").trim().toUpperCase());
+      const verified =
+        meData.isAuthorized === true || status === "APPROVED";
 
-        const verified =
-          meData.isAuthorized === true || status === "APPROVED";
+      const info = {
+        email: meData.email || "",
+        name: meData.name || "",
+        phone: meData.phoneNumber || meData.phone || "",
+        university: meData.university || "",
+        major: meData.major || "",
+        bio: meData.description || meData.bio || "",
+        verified,
+        profileImage: meData.logoImage || "",
+      };
 
-        const info = {
-          email: meData.email || "",
-          name: meData.name || "",
-          phone: meData.phone || "",
-          university: meData.university || "",
-          major: meData.major || "",
-          bio: meData.bio || "",
-          verified,
-          profileImage: meData.logoImage || "",
-        };
+      setStudentInfo(info);
+      setOriginalInfo(info);
+    } catch (error) {
+      console.error(error);
+      alert("정보 불러오기 중 오류가 발생했습니다.");
+    }
+  };
 
-        setStudentInfo(info);
-        setOriginalInfo(info);
-      } catch (error) {
-        console.error(error);
-        alert("정보 불러오기 중 오류가 발생했습니다.");
-      }
-    };
+  useEffect(() => {
     if (token) fetchData();
   }, [token]);
 
@@ -123,13 +124,29 @@ export default function MyPage() {
 
   const handleSave = async () => {
     try {
-      console.log("저장 요청:", studentInfo);
-      setOriginalInfo(studentInfo);
+      setSubmitting(true);
+      const formData = new FormData();
+      formData.append("name", studentInfo.name);
+      formData.append("phoneNumber", studentInfo.phone);
+      formData.append("description", studentInfo.bio);
+
+      const res = await fetch(`${API_BASE_URL}/user/profile`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      // 저장 후 최신 정보 다시 불러오기
+      await fetchData();
       setIsEditing(false);
       alert("프로필이 수정되었습니다.");
     } catch (error) {
       console.error("저장 실패:", error);
-      alert("저장 중 오류가 발생했습니다.");
+      alert("저장 중 오류가 발생했습니다.\n" + error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
