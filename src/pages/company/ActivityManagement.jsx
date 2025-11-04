@@ -28,12 +28,12 @@ export default function CompanyActivityManagement() {
           `${API_BASE_URL}/posting/${id}/applications`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        if (!applicantRes.ok) throw new Error("지원자 목록을 불러올 수 없습니다.");
+        if (!applicantRes.ok) throw new Error("지원자 목록을 불러올 수 없습.");
         const applicantData = await applicantRes.json();
         setApplicants(applicantData);
       } catch (err) {
         console.error(err);
-        alert("정보를 불러오는 중 오류가 발생했습니다.");
+        alert("정보를 불러오는 중 오류가 발생했.");
       } finally {
         setLoading(false);
       }
@@ -57,34 +57,30 @@ export default function CompanyActivityManagement() {
     }
   };
 
-  // 선택한 지원자 선발 확정 (각 지원자별로 상태 변경 API 호출)
+  // 지원자 상태 변경 함수 (승인/거절) - 응답 콘솔 출력 추가
+  const updateApplicantStatus = async (applicationId, approve) => {
+    const status = approve ? "APPROVED" : "REJECTED";
+    const res = await fetch(
+      `${API_BASE_URL}/posting/applications/${applicationId}/status?status=${status}`,
+      {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    const text = await res.text();
+    console.log(`지원자 ${applicationId} 응답:`, text);
+    if (!res.ok) throw new Error(text);
+  };
+
+  // 선택한 지원자 선발 확정 (approve=true)
   const handleConfirmSelection = async () => {
     if (selectedIds.length === 0) return alert("선택된 지원자가 없습니다.");
     if (!window.confirm(`${selectedIds.length}명의 지원자를 선발하시겠습니까?`)) return;
 
     try {
-      // 각 지원자별로 상태 변경 요청
       await Promise.all(
-        selectedIds.map(async (applicationId) => {
-          const res = await fetch(
-            `${API_BASE_URL}/posting/applications/${applicationId}/status`,
-            {
-              method: "PUT", // 또는 POST, 백엔드 명세에 따라
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ status: "APPROVED" }),
-            }
-          );
-          if (!res.ok) {
-            const text = await res.text();
-            console.warn(`지원자 ${applicationId} 선발 실패:`, text);
-          }
-        })
+        selectedIds.map((applicationId) => updateApplicantStatus(applicationId, true))
       );
-
-      // 시각적 처리: 로컬에서 선발 상태로 변경
       setApplicants((prev) =>
         prev.map((a) => (selectedIds.includes(a.id) ? { ...a, status: "APPROVED" } : a))
       );
@@ -92,7 +88,7 @@ export default function CompanyActivityManagement() {
       alert("선발 처리가 완료되었습니다.");
     } catch (err) {
       console.error(err);
-      alert("선발 처리 중 오류가 발생했습니다.");
+      alert("선발 처리 중 오류가 발생했습니다. " + err.message);
     }
   };
 
