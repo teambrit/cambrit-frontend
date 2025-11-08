@@ -191,6 +191,8 @@ export default function CompanyActivityManagement() {
                 <th className="border px-4 py-2 text-left">ID</th>
                 <th className="border px-4 py-2 text-left">이름</th>
                 <th className="border px-4 py-2 text-left">이메일</th>
+                <th className="border px-4 py-2 text-left">학생정보</th>
+                <th className="border px-4 py-2 text-left">활동인증파일</th>
                 <th className="border px-4 py-2 text-left">상태</th>
                 <th className="border px-4 py-2 text-left">지원일</th>
               </tr>
@@ -208,6 +210,36 @@ export default function CompanyActivityManagement() {
                   <td className="border px-4 py-2">{a.id}</td>
                   <td className="border px-4 py-2">{a.applicantName}</td>
                   <td className="border px-4 py-2">{a.applicantEmail}</td>
+                  <td className="border px-4 py-2">
+                    {a.applicantAuthorizationStatus === "APPROVED" && (
+                      <div className="text-sm text-gray-700">
+                        {a.applicantUniversity && <div>{a.applicantUniversity}</div>}
+                        {a.applicantMajor && <div>{a.applicantMajor}</div>}
+                      </div>
+                    )}
+                  </td>
+                  <td className="border px-4 py-2 text-center">
+                    {a.verificationFile ? (
+                      <a
+                        href={a.verificationFile.startsWith("data:") || a.verificationFile.startsWith("http")
+                          ? a.verificationFile
+                          : `data:image/jpeg;base64,${a.verificationFile}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download
+                        className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 border border-blue-200"
+                      >
+                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        다운로드
+                      </a>
+                    ) : (
+                      <span className="text-gray-400 text-sm">
+                        {a.status === "APPROVED" ? "업로드 대기" : "미업로드"}
+                      </span>
+                    )}
+                  </td>
                   <td className="border px-4 py-2">
                     {a.status === "PENDING"
                       ? "대기"

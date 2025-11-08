@@ -1,23 +1,70 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import defaultLogo from "../../assets/default-company-logo.png";
 import defaultThumbnail from "../../assets/default-company-thumbnail.png";
+import { API_BASE_URL } from "../../config";
 
 export default function CompanyHome() {
   const [isEditing, setIsEditing] = useState(false);
   const [company, setCompany] = useState({
-    name: "캠브릿 주식회사",
-    businessNumber: "123-45-67890",
+    name: "",
+    businessNumber: "",
     profileImage: "",
     thumbnailImage: "",
-    url: "https://www.cambrit.co.kr",
-    description:
-      "AI 및 클라우드 기술을 활용한 대학-기업 연계형 인재 매칭 플랫폼을 운영하는 기업입니다.",
+    url: "",
+    description: "",
   });
+  const [originalCompany, setOriginalCompany] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [logoFile, setLogoFile] = useState(null);
+  const [backgroundFile, setBackgroundFile] = useState(null);
 
   const [stats] = useState({
     jobCount: 5,
     applicantCount: 42,
   });
+
+  const token = localStorage.getItem("token");
+
+  // BLOB 데이터를 data URI로 변환하는 함수
+  const formatImageUrl = (imageData) => {
+    if (!imageData) return "";
+    // 이미 data URI 형식이거나 URL인 경우 그대로 반환
+    if (imageData.startsWith("data:") || imageData.startsWith("http")) {
+      return imageData;
+    }
+    // Base64 문자열인 경우 data URI로 변환
+    return `data:image/jpeg;base64,${imageData}`;
+  };
+
+  // 기업 정보 불러오기
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/user/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("기업 정보를 불러올 수 없습니다.");
+        const data = await res.json();
+
+        const companyInfo = {
+          name: data.name || "",
+          businessNumber: data.companyCode || "",
+          profileImage: formatImageUrl(data.logoImage),
+          thumbnailImage: formatImageUrl(data.backgroundImage),
+          url: data.companyUrl || "",
+          description: data.description || "",
+        };
+
+        setCompany(companyInfo);
+        setOriginalCompany(companyInfo);
+      } catch (error) {
+        console.error(error);
+        alert("기업 정보를 불러오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    if (token) fetchCompanyInfo();
+  }, [token]);
 
   const handleInputChange = (field, value) => {
     setCompany((prev) => ({
@@ -34,13 +81,62 @@ export default function CompanyHome() {
         ...prev,
         [field]: imageUrl,
       }));
+
+      // 파일 객체 저장
+      if (field === "profileImage") {
+        setLogoFile(file);
+      } else if (field === "thumbnailImage") {
+        setBackgroundFile(file);
+      }
     }
   };
 
-  const handleSave = () => {
-    // TODO: API 연동
+  const handleSave = async () => {
+    try {
+      setSubmitting(true);
+
+      const formData = new FormData();
+      formData.append("name", company.name);
+      formData.append("companyCode", company.businessNumber);
+      formData.append("companyUrl", company.url);
+      formData.append("description", company.description);
+
+      // 이미지 파일이 선택되었으면 추가
+      if (logoFile) {
+        formData.append("logoImage", logoFile);
+      }
+      if (backgroundFile) {
+        formData.append("backgroundImage", backgroundFile);
+      }
+
+      const res = await fetch(`${API_BASE_URL}/user/company/profile`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+
+      alert("회사 정보가 수정되었습니다.");
+      setOriginalCompany(company);
+      setLogoFile(null);
+      setBackgroundFile(null);
+      setIsEditing(false);
+    } catch (error) {
+      console.error(error);
+      alert("회사 정보 수정 중 오류가 발생했습니다.\n" + error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setCompany(originalCompany);
+    setLogoFile(null);
+    setBackgroundFile(null);
     setIsEditing(false);
-    alert("회사 정보가 수정되었습니다.");
   };
 
   return (
@@ -71,16 +167,22 @@ export default function CompanyHome() {
           ) : (
             <div className="flex gap-3">
               <button
-                onClick={() => setIsEditing(false)}
+                onClick={handleCancel}
                 className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                disabled={submitting}
               >
                 취소
               </button>
               <button
                 onClick={handleSave}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className={`px-4 py-2 rounded-md text-white ${
+                  submitting
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
+                disabled={submitting}
               >
-                저장
+                {submitting ? "저장 중..." : "저장"}
               </button>
             </div>
           )}

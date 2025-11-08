@@ -33,6 +33,7 @@ export default function HeaderCompany() {
   const navigation = [
     { name: "Dashboard", href: "/company" },
     { name: "Activity", href: "/company/activity" },
+    { name: "Bill", href: "/company/bill" },
   ].map((item) => ({
     ...item,
     current: location.pathname === item.href,

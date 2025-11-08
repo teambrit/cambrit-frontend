@@ -87,11 +87,18 @@ export default function MyPage() {
       return;
     }
 
+    if (!studentInfo.university || !studentInfo.major) {
+      alert("대학교와 전공을 모두 입력해주세요.");
+      return;
+    }
+
     try {
       setSubmitting(true);
 
       const formData = new FormData();
       formData.append("file", uploadFile);
+      formData.append("university", studentInfo.university);
+      formData.append("major", studentInfo.major);
 
       const res = await fetch(`${API_BASE_URL}/user/student-authorization-request`, {
         method: "POST",

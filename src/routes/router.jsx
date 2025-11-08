@@ -10,6 +10,7 @@ import Applications from "../pages/Applications";
 import CompanyActivity from "../pages/company/Activity";
 import CompanyActivityCreate from "../pages/company/ActivityCreate";
 import CompanyActivityManagement from "../pages/company/ActivityManagement";
+import CompanyBill from "../pages/company/Bill";
 import CompanyHome from "../pages/company";
 import AdminHome from "../pages/admin";
 
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
       { path: "company/activity", element: <CompanyActivity /> },
       { path: "company/activity/new", element: <CompanyActivityCreate /> },
       { path: "company/activity/management/:id", element: <CompanyActivityManagement /> },
+      { path: "company/bill", element: <CompanyBill /> },
 
       { path: "admin", element: <AdminHome /> },
     ],

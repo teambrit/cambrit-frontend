@@ -7,6 +7,7 @@ export default function Applications() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [uploadingId, setUploadingId] = useState(null);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -38,6 +39,50 @@ export default function Applications() {
 
     fetchApplications();
   }, [token, navigate]);
+
+  // 파일 업로드 핸들러
+  const handleFileUpload = async (applicationId, file) => {
+    if (!file) {
+      alert("파일을 선택해주세요.");
+      return;
+    }
+
+    try {
+      setUploadingId(applicationId);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(
+        `${API_BASE_URL}/posting/applications/${applicationId}/verification-file`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (!res.ok) throw new Error(await res.text());
+
+      alert("인증 파일이 업로드되었습니다.");
+
+      // 업로드 후 목록 새로고침
+      const refreshRes = await fetch(`${API_BASE_URL}/posting/applications/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (refreshRes.ok) {
+        const data = await refreshRes.json();
+        setApplications(data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("파일 업로드 중 오류가 발생했습니다.\n" + error.message);
+    } finally {
+      setUploadingId(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -134,6 +179,34 @@ export default function Applications() {
                       {new Date(app.createdAt).toLocaleDateString("ko-KR")}
                     </p>
                   </div>
+
+                  {/* 파일 업로드 버튼 (선발된 경우에만 표시) */}
+                  {app.status === "APPROVED" && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <label className="block">
+                        <span className="text-sm font-medium text-gray-700 mb-2 block">
+                          인증 파일 업로드
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="file"
+                            accept="image/*,application/pdf"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              if (file) {
+                                handleFileUpload(app.id, file);
+                              }
+                            }}
+                            disabled={uploadingId === app.id}
+                            className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                          />
+                          {uploadingId === app.id && (
+                            <span className="text-sm text-gray-500">업로드 중...</span>
+                          )}
+                        </div>
+                      </label>
+                    </div>
+                  )}
                 </div>
               ))
             ) : (
