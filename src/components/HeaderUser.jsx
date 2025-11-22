@@ -18,6 +18,9 @@ export default function HeaderUser() {
             <Link to="/applications" className="hover:text-blue-500">
               지원목록
             </Link>
+            <Link to="/chatbot" className="hover:text-blue-500">
+              챗봇
+            </Link>
             <Link to="/mypage" className="hover:text-blue-500">
               마이페이지
             </Link>

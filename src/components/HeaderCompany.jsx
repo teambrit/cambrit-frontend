@@ -9,7 +9,7 @@ import {
 } from "@headlessui/react";
 import {
   Bars3Icon,
-  BellIcon,
+  ChatBubbleLeftRightIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { logout } from "../utils/auth";
@@ -78,14 +78,14 @@ export default function HeaderCompany() {
             </div>
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6">
-                <button
-                  type="button"
+                <a
+                  href="/company/chatbot"
                   className="relative rounded-full p-1 text-gray-400 hover:text-white focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
                 >
                   <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon aria-hidden="true" className="size-6" />
-                </button>
+                  <span className="sr-only">챗봇</span>
+                  <ChatBubbleLeftRightIcon aria-hidden="true" className="size-6" />
+                </a>
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
@@ -167,14 +167,14 @@ export default function HeaderCompany() {
                   {user.email}
                 </div>
               </div>
-              <button
-                type="button"
+              <a
+                href="/company/chatbot"
                 className="relative ml-auto shrink-0 rounded-full p-1 text-gray-400 hover:text-white focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
               >
                 <span className="absolute -inset-1.5" />
-                <span className="sr-only">View notifications</span>
-                <BellIcon aria-hidden="true" className="size-6" />
-              </button>
+                <span className="sr-only">챗봇</span>
+                <ChatBubbleLeftRightIcon aria-hidden="true" className="size-6" />
+              </a>
             </div>
             <div className="mt-3 space-y-1 px-2">
               <DisclosureButton
