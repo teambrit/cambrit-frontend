@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import logo from "../assets/logo.png";
 import { API_BASE_URL } from "../config";
+import Logo from "../components/Logo";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -57,53 +57,71 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img alt="Cambrit" src={logo} className="mx-auto h-10 w-auto" />
-        <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          로그인
-        </h2>
+    <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-gradient-to-b from-campus-50 to-white">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2.5 mb-4">
+            <Logo className="w-10 h-10" />
+            <span className="text-2xl font-bold text-gray-900">CamBrit</span>
+          </Link>
+          <h2 className="text-3xl font-bold text-gray-900">
+            다시 오신 것을 환영해요!
+          </h2>
+          <p className="mt-2 text-gray-600">
+            {memberType === "student"
+              ? "내 커뮤니티에서 활동하고 용돈 벌 준비 되셨나요?"
+              : memberType === "company"
+              ? "학생 커뮤니티에 효과적으로 홍보할 준비 되셨나요?"
+              : "관리자 페이지에 접속합니다"}
+          </p>
+        </div>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="space-y-6">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="card p-8 space-y-6">
           {/* 회원 유형 선택 */}
-          <ul className="flex w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            {[
-              { id: "student", label: "개인회원" },
-              { id: "company", label: "기업회원" },
-              { id: "admin", label: "관리자" },
-            ].map((item) => (
-              <li
-                key={item.id}
-                className="w-full border-r last:border-r-0 dark:border-gray-600"
-              >
-                <div className="flex items-center ps-3">
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-3">
+              회원 유형
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: "student", label: "학생", icon: "🎓" },
+                { id: "company", label: "기업", icon: "🏢" },
+                { id: "admin", label: "관리자", icon: "⚙️" },
+              ].map((item) => (
+                <label
+                  key={item.id}
+                  className={`relative flex flex-col items-center justify-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                    memberType === item.id
+                      ? "border-primary-500 bg-primary-50"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  }`}
+                >
                   <input
-                    id={`radio-${item.id}`}
                     type="radio"
                     name="memberType"
                     value={item.id}
                     checked={memberType === item.id}
                     onChange={(e) => setMemberType(e.target.value)}
-                    className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500"
+                    className="sr-only"
                   />
-                  <label
-                    htmlFor={`radio-${item.id}`}
-                    className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
+                  <span className="text-2xl mb-1">{item.icon}</span>
+                  <span className={`text-xs font-medium ${
+                    memberType === item.id ? "text-primary-700" : "text-gray-700"
+                  }`}>
                     {item.label}
-                  </label>
-                </div>
-              </li>
-            ))}
-          </ul>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
 
           {/* 이메일 */}
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-900 dark:text-gray-100"
+              className="block text-sm font-semibold text-gray-900 mb-2"
             >
               이메일
             </label>
@@ -113,24 +131,25 @@ export default function SignIn() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white"
+              placeholder="your@email.com"
+              className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
             />
           </div>
 
           {/* 비밀번호 */}
           <div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-2">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-900 dark:text-gray-100"
+                className="block text-sm font-semibold text-gray-900"
               >
                 비밀번호
               </label>
               <a
                 href="#"
-                className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+                className="text-xs font-medium text-primary-600 hover:text-primary-700 transition-colors"
               >
-                비밀번호를 잊으셨나요?
+                비밀번호 찾기
               </a>
             </div>
             <input
@@ -139,37 +158,39 @@ export default function SignIn() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white"
+              placeholder="••••••••"
+              className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
             />
-          </div>
-
-          {/* 로그인 버튼 */}
-          <div>
-            <button
-              type="button" // form 기본 제출 방지
-              onClick={handleSubmit}
-              disabled={loading}
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
-            >
-              {loading ? "처리 중..." : "로그인"}
-            </button>
           </div>
 
           {/* 에러 메시지 */}
           {errorMsg && (
-            <p className="text-sm text-red-600 dark:text-red-400 mt-2">
-              {errorMsg}
-            </p>
+            <div className="p-3 rounded-lg bg-red-50 border border-red-200">
+              <p className="text-sm text-red-600 flex items-center gap-2">
+                <span>⚠️</span>
+                {errorMsg}
+              </p>
+            </div>
           )}
+
+          {/* 로그인 버튼 */}
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "로그인 중..." : "로그인"}
+          </button>
         </div>
 
-        <p className="mt-10 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-6 text-center text-sm text-gray-600">
           아직 회원이 아니신가요?{" "}
           <Link
             to="/signup"
-            className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+            className="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
           >
-            회원가입
+            회원가입하기
           </Link>
         </p>
       </div>

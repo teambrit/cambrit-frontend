@@ -26,99 +26,148 @@ export default function Home() {
   }, [page]);
 
   return (
-    <div className="container mx-auto py-3 sm:py-4">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 mt-10">
-        <div className="mx-auto">
-          <h2 className="text-pretty text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl">
-            지금 등록된 활동
-          </h2>
+    <div className="min-h-screen">
+      {/* 히어로 섹션 */}
+      <div className="bg-gradient-to-b from-campus-50 to-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200 mb-6">
+              <span className="text-sm font-medium text-gray-600">💡 학생과 기업을 연결하는</span>
+              <span className="text-sm font-semibold text-primary-600">학생-기업 매칭 플랫폼</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+              캠퍼스 생활하면서<br />
+              <span className="text-primary-500">용돈</span>도 함께 벌어요
+            </h1>
+
+            <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              학과, 동아리, 학생회 등 내가 활동하는 커뮤니티에서<br />
+              활동하고 수익을 만들어보세요
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="#activities" className="btn-primary inline-flex items-center justify-center gap-2">
+                <span>활동 보기</span>
+                <span>→</span>
+              </a>
+              <a href="/signin" className="btn-secondary inline-flex items-center justify-center gap-2">
+                <span>시작하기</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 활동 리스트 섹션 */}
+      <div id="activities" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              지금 모집중인 활동
+            </h2>
+            <p className="text-gray-600 mt-2">
+              총 <span className="font-semibold text-primary-600">{posts.length}개</span>의 활동이 대기중이에요
+            </p>
+          </div>
         </div>
 
         {/* 활동 카드 리스트 */}
-        <div className="mx-auto mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {posts.length > 0 ? (
             posts.map((post) => (
               <a
                 key={post.id}
                 href={`/activity/${post.id}`}
-                className="block p-6 bg-white border border-gray-200 rounded-lg shadow-sm transition hover:shadow-md"
+                className="card p-5 group cursor-pointer"
               >
                 {/* 회사 로고 */}
-                <div className="flex justify-center mb-3">
-                  <img
-                    src={post.logoImage || defaultCompanyLogo}
-                    alt={`${post.posterName} Logo`}
-                    className="h-12 w-auto object-contain"
-                  />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <img
+                      src={post.logoImage || defaultCompanyLogo}
+                      alt={`${post.posterName} Logo`}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-500 truncate">{post.posterName}</p>
+                    <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-primary-600 transition-colors">
+                      {post.title}
+                    </p>
+                  </div>
                 </div>
 
-                {/* 제목 */}
-                <h5 className="mb-2 text-base font-semibold tracking-tight text-gray-900">
-                  {post.title}
-                </h5>
-
                 {/* 태그 */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {(post.tags || []).map((t) => (
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {(post.tags || []).slice(0, 2).map((t) => (
                     <span
                       key={t}
-                      className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20"
+                      className="inline-flex items-center px-2 py-1 rounded-md bg-campus-50 text-xs font-medium text-campus-700"
                     >
                       {t}
                     </span>
                   ))}
+                  {post.tags && post.tags.length > 2 && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-xs font-medium text-gray-600">
+                      +{post.tags.length - 2}
+                    </span>
+                  )}
+                </div>
 
-                  {/* 보상 금액 */}
-                  <span className="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                    💰 {post.compensation ? `${post.compensation}원` : "미정"}
-                  </span>
-
-                  {/* 마감일 */}
-                  <span className="inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-400/30">
-                    📅 {post.applyDueDate || "-"}
-                  </span>
+                {/* 정보 */}
+                <div className="space-y-2 pt-3 border-t border-gray-100">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">보상</span>
+                    <span className="font-semibold text-primary-600">
+                      {post.compensation ? `${post.compensation.toLocaleString()}원` : "협의"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">마감</span>
+                    <span className="font-medium text-gray-900">
+                      {post.applyDueDate || "상시모집"}
+                    </span>
+                  </div>
                 </div>
               </a>
             ))
           ) : (
-            <p className="text-gray-500 col-span-4 text-center mt-10">등록된 활동이 없습니다.</p>
+            <div className="col-span-full text-center py-16">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <span className="text-3xl">📭</span>
+              </div>
+              <p className="text-gray-500">등록된 활동이 없습니다.</p>
+            </div>
           )}
         </div>
 
         {/* 페이지네이션 */}
-        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mt-10">
-          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700">
-                Page <span className="font-medium">{page + 1}</span> of{" "}
-                <span className="font-medium">{totalPages}</span>
-              </p>
-            </div>
-            <div>
-              <nav
-                aria-label="Pagination"
-                className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-              >
-                <button
-                  onClick={() => setPage((p) => Math.max(p - 1, 0))}
-                  disabled={page === 0}
-                  className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-40"
-                >
-                  <span className="sr-only">Previous</span>
-                  <ChevronLeftIcon aria-hidden="true" className="size-5" />
-                </button>
-                <button
-                  onClick={() => setPage((p) => (p + 1 < totalPages ? p + 1 : p))}
-                  disabled={page + 1 >= totalPages}
-                  className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-40"
-                >
-                  <span className="sr-only">Next</span>
-                  <ChevronRightIcon aria-hidden="true" className="size-5" />
-                </button>
-              </nav>
-            </div>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-12">
+            <button
+              onClick={() => setPage((p) => Math.max(p - 1, 0))}
+              disabled={page === 0}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeftIcon className="w-5 h-5" />
+            </button>
+
+            <span className="px-4 py-2 text-sm font-medium text-gray-700">
+              <span className="font-semibold text-primary-600">{page + 1}</span>
+              {" / "}
+              {totalPages}
+            </span>
+
+            <button
+              onClick={() => setPage((p) => (p + 1 < totalPages ? p + 1 : p))}
+              disabled={page + 1 >= totalPages}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRightIcon className="w-5 h-5" />
+            </button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

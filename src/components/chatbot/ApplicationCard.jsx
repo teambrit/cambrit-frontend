@@ -1,60 +1,67 @@
 import { Link } from "react-router-dom";
 
 export default function ApplicationCard({ application }) {
-  const getStatusColor = (status) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case "APPROVED":
-        return "text-green-600 bg-green-50";
+        return "bg-green-50 text-green-700";
       case "REJECTED":
-        return "text-red-600 bg-red-50";
+        return "bg-red-50 text-red-700";
       default:
-        return "text-gray-600 bg-gray-50";
+        return "bg-gray-100 text-gray-700";
     }
   };
 
   const getStatusText = (status) => {
     switch (status) {
       case "APPROVED":
-        return "선발됨";
+        return "✓ 선발됨";
       case "REJECTED":
-        return "탈락";
+        return "✗ 탈락";
       default:
-        return "지원 완료";
+        return "· 지원 완료";
     }
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-      <Link to={`/activity/${application.postingId}`} target="_blank" rel="noopener noreferrer" className="block">
-        <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 flex-1">
+    <Link to={`/activity/${application.postingId}`} target="_blank" rel="noopener noreferrer" className="block">
+      <div className="card p-5 hover:shadow-md transition-shadow h-full">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors flex-1 line-clamp-2">
             {application.postingTitle}
           </h3>
           <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+            className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${getStatusBadge(
               application.status
             )}`}
           >
             {getStatusText(application.status)}
           </span>
         </div>
-        <p className="text-sm text-gray-600 mb-2">{application.posterName}</p>
+        <p className="text-sm text-gray-500 mb-3">{application.posterName}</p>
         {application.postingTags && application.postingTags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-2">
-            {application.postingTags.map((tag, idx) => (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {application.postingTags.slice(0, 3).map((tag, idx) => (
               <span
                 key={idx}
-                className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700"
+                className="inline-flex items-center px-2 py-1 rounded-md bg-campus-50 text-xs font-medium text-campus-700"
               >
                 {tag}
               </span>
             ))}
+            {application.postingTags.length > 3 && (
+              <span className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-xs font-medium text-gray-600">
+                +{application.postingTags.length - 3}
+              </span>
+            )}
           </div>
         )}
-        <p className="text-xs text-gray-500">
-          지원일: {new Date(application.createdAt).toLocaleDateString("ko-KR")}
-        </p>
-      </Link>
-    </div>
+        <div className="pt-3 border-t border-gray-100">
+          <p className="text-xs text-gray-500">
+            지원일: {new Date(application.createdAt).toLocaleDateString("ko-KR")}
+          </p>
+        </div>
+      </div>
+    </Link>
   );
 }

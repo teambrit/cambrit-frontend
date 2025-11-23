@@ -32,53 +32,53 @@ export default function UserProfileCard({ user }) {
   const getAuthStatusColor = (status) => {
     switch (status) {
       case "APPROVED":
-        return "text-green-600 bg-green-50";
+        return "bg-green-50 text-green-700";
       case "PENDING":
-        return "text-yellow-600 bg-yellow-50";
+        return "bg-blue-50 text-blue-700";
       case "REJECTED":
-        return "text-red-600 bg-red-50";
+        return "bg-red-50 text-red-700";
       default:
-        return "text-gray-600 bg-gray-50";
+        return "bg-gray-100 text-gray-700";
     }
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-      <div className="flex items-start gap-4 mb-4">
+    <div className="card p-6">
+      <div className="flex items-start gap-4 mb-6">
         {user.profileImage && (
           <img
             src={user.profileImage}
             alt="프로필"
-            className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+            className="w-20 h-20 rounded-full object-cover border-4 border-gray-100"
           />
         )}
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-2">
             <h3 className="text-xl font-bold text-gray-900">{user.name}</h3>
-            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+            <span className="px-3 py-1 bg-campus-50 text-campus-700 text-xs font-semibold rounded-full">
               {getRoleText(user.role)}
             </span>
           </div>
-          <p className="text-sm text-gray-600 mb-2">{user.email}</p>
+          <p className="text-sm text-gray-600 mb-1">{user.email}</p>
           <p className="text-xs text-gray-500">ID: {user.id}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 text-sm mb-4">
         <div>
-          <p className="text-gray-500 text-xs mb-1">계정 상태</p>
-          <p className="font-medium">
+          <p className="text-gray-500 text-xs mb-2">계정 상태</p>
+          <p className="font-semibold">
             {user.isAuthorized ? (
-              <span className="text-green-600">인증됨</span>
+              <span className="text-green-600">✓ 인증됨</span>
             ) : (
-              <span className="text-gray-600">미인증</span>
+              <span className="text-gray-600">· 미인증</span>
             )}
           </p>
         </div>
         <div>
-          <p className="text-gray-500 text-xs mb-1">학생 인증 상태</p>
+          <p className="text-gray-500 text-xs mb-2">학생 인증 상태</p>
           <span
-            className={`inline-block px-2 py-1 rounded text-xs font-medium ${getAuthStatusColor(
+            className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getAuthStatusColor(
               user.studentAuthorizationStatus
             )}`}
           >
@@ -89,18 +89,18 @@ export default function UserProfileCard({ user }) {
 
       {/* 학생 정보 */}
       {user.role === "STUDENT" && (
-        <div className="border-t pt-4 mb-4">
-          <h4 className="font-semibold text-gray-900 mb-2">학생 정보</h4>
+        <div className="border-t border-gray-100 pt-4 mb-4">
+          <h4 className="font-semibold text-gray-900 mb-3">학생 정보</h4>
           <div className="space-y-2 text-sm">
-            <div>
-              <span className="text-gray-500">학교:</span>{" "}
-              <span className="text-gray-900">
+            <div className="flex justify-between">
+              <span className="text-gray-500">학교</span>
+              <span className="text-gray-900 font-medium">
                 {user.university || "미등록"}
               </span>
             </div>
-            <div>
-              <span className="text-gray-500">전공:</span>{" "}
-              <span className="text-gray-900">{user.major || "미등록"}</span>
+            <div className="flex justify-between">
+              <span className="text-gray-500">전공</span>
+              <span className="text-gray-900 font-medium">{user.major || "미등록"}</span>
             </div>
           </div>
         </div>
@@ -108,25 +108,25 @@ export default function UserProfileCard({ user }) {
 
       {/* 기업 정보 */}
       {user.role === "COMPANY" && (
-        <div className="border-t pt-4 mb-4">
-          <h4 className="font-semibold text-gray-900 mb-2">기업 정보</h4>
+        <div className="border-t border-gray-100 pt-4 mb-4">
+          <h4 className="font-semibold text-gray-900 mb-3">기업 정보</h4>
           <div className="space-y-2 text-sm">
             {user.companyCode && (
-              <div>
-                <span className="text-gray-500">사업자번호:</span>{" "}
-                <span className="text-gray-900">{user.companyCode}</span>
+              <div className="flex justify-between">
+                <span className="text-gray-500">사업자번호</span>
+                <span className="text-gray-900 font-medium">{user.companyCode}</span>
               </div>
             )}
             {user.companyUrl && (
-              <div>
-                <span className="text-gray-500">홈페이지:</span>{" "}
+              <div className="flex justify-between">
+                <span className="text-gray-500">홈페이지</span>
                 <a
                   href={user.companyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
+                  className="text-primary-600 hover:text-primary-700 font-medium hover:underline"
                 >
-                  {user.companyUrl}
+                  링크
                 </a>
               </div>
             )}
@@ -135,18 +135,18 @@ export default function UserProfileCard({ user }) {
       )}
 
       {/* 연락처 및 소개 */}
-      <div className="border-t pt-4 mb-4">
-        <div className="space-y-2 text-sm">
+      <div className="border-t border-gray-100 pt-4 mb-6">
+        <div className="space-y-3 text-sm">
           {user.phoneNumber && (
-            <div>
-              <span className="text-gray-500">전화번호:</span>{" "}
-              <span className="text-gray-900">{user.phoneNumber}</span>
+            <div className="flex justify-between">
+              <span className="text-gray-500">전화번호</span>
+              <span className="text-gray-900 font-medium">{user.phoneNumber}</span>
             </div>
           )}
           {user.description && (
             <div>
-              <p className="text-gray-500 mb-1">소개</p>
-              <p className="text-gray-900 leading-relaxed whitespace-pre-wrap">
+              <p className="text-gray-500 mb-2">소개</p>
+              <p className="text-gray-900 leading-relaxed whitespace-pre-wrap p-3 bg-gray-50 rounded-lg border border-gray-200">
                 {user.description}
               </p>
             </div>
@@ -159,7 +159,7 @@ export default function UserProfileCard({ user }) {
         to="/mypage"
         target="_blank"
         rel="noopener noreferrer"
-        className="block w-full text-center bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+        className="btn-primary w-full text-center block"
       >
         마이페이지에서 확인하기
       </Link>

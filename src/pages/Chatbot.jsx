@@ -89,7 +89,7 @@ export default function Chatbot() {
     return functionResults.map((result, idx) => {
       const { functionName, data } = result;
 
-      // get_posting_list: 공고 목록 (가로 슬라이딩)
+      // get_posting_list: 활동 목록 (가로 슬라이딩)
       if (functionName === "get_posting_list" && data?.content) {
         return (
           <div key={idx} className="mt-3">
@@ -101,13 +101,13 @@ export default function Chatbot() {
               ))}
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              총 {data.content.length}개의 공고
+              총 {data.content.length}개의 활동
             </p>
           </div>
         );
       }
 
-      // get_posting_detail: 공고 상세
+      // get_posting_detail: 활동 상세
       if (functionName === "get_posting_detail" && data) {
         return (
           <div key={idx} className="mt-3">
@@ -116,7 +116,7 @@ export default function Chatbot() {
         );
       }
 
-      // create_posting: 공고 생성 결과
+      // create_posting: 활동 생성 결과
       if (functionName === "create_posting" && data) {
         return (
           <div key={idx} className="mt-3">
@@ -144,7 +144,7 @@ export default function Chatbot() {
                 to="/applications"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-blue-600 hover:text-blue-700 font-medium hover:underline"
+                className="text-xs text-primary-600 hover:text-primary-700 font-medium hover:underline"
               >
                 지원 목록 페이지 →
               </Link>
@@ -167,7 +167,7 @@ export default function Chatbot() {
         return null;
       }
 
-      // apply_to_posting: 공고 지원 완료 (JSON 출력 안 함)
+      // apply_to_posting: 활동 지원 완료 (JSON 출력 안 함)
       if (functionName === "apply_to_posting") {
         return null;
       }
@@ -196,7 +196,7 @@ export default function Chatbot() {
                 to="/company/bill"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-blue-600 hover:text-blue-700 font-medium hover:underline"
+                className="text-xs text-primary-600 hover:text-primary-700 font-medium hover:underline"
               >
                 청구 목록 페이지 →
               </Link>
@@ -235,7 +235,7 @@ export default function Chatbot() {
                   to={`/company/activity/management/${postingId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-blue-600 hover:text-blue-700 font-medium hover:underline"
+                  className="text-xs text-primary-600 hover:text-primary-700 font-medium hover:underline"
                 >
                   지원자 관리 페이지 →
                 </Link>
@@ -247,10 +247,12 @@ export default function Chatbot() {
 
       // 기타: JSON 형태로 표시
       return (
-        <div key={idx} className="mt-3 p-3 bg-gray-50 rounded border text-xs">
-          <pre className="whitespace-pre-wrap overflow-x-auto">
-            {JSON.stringify(data, null, 2)}
-          </pre>
+        <div key={idx} className="mt-3">
+          <div className="card p-4 bg-gray-50">
+            <pre className="whitespace-pre-wrap overflow-x-auto text-xs text-gray-700 font-mono">
+              {JSON.stringify(data, null, 2)}
+            </pre>
+          </div>
         </div>
       );
     });
@@ -325,19 +327,18 @@ export default function Chatbot() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* 헤더 */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">AI 챗봇</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">💬 AI 챗봇</h1>
             <p className="text-sm text-gray-600 mt-1">
-              궁금한 것을 물어보세요. 공고 조회, 지원, 프로필 수정 등을
-              도와드립니다.
+              궁금한 것을 물어보세요. 활동 조회, 지원, 프로필 수정 등을 도와드립니다.
             </p>
           </div>
           {messages.length > 0 && (
             <button
               onClick={startNewChat}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition"
+              className="btn-secondary whitespace-nowrap"
             >
               새 대화
             </button>
@@ -347,13 +348,15 @@ export default function Chatbot() {
 
       {/* 메시지 영역 */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-6 py-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
           {messages.length === 0 ? (
-            <div className="text-center text-gray-500 mt-20">
-              <p className="text-lg mb-2">안녕하세요! 무엇을 도와드릴까요?</p>
-              <p className="text-sm text-gray-400">
-                예: "공고 목록 보여줘", "내 지원 내역 알려줘", "프로필 수정하고
-                싶어"
+            <div className="text-center mt-20">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-50 mb-4">
+                <span className="text-3xl">💬</span>
+              </div>
+              <p className="text-xl font-semibold text-gray-900 mb-2">안녕하세요! 무엇을 도와드릴까요?</p>
+              <p className="text-sm text-gray-500">
+                예: "활동 목록 보여줘", "내 지원 내역 알려줘", "프로필 수정하고 싶어"
               </p>
             </div>
           ) : (
@@ -368,7 +371,7 @@ export default function Chatbot() {
                   <div
                     className={`max-w-[80%] ${
                       msg.role === "user"
-                        ? "bg-blue-600 text-white rounded-lg px-4 py-3"
+                        ? "bg-primary-500 text-white rounded-lg px-4 py-3 shadow-sm"
                         : "w-full"
                     }`}
                   >
@@ -380,8 +383,8 @@ export default function Chatbot() {
                       <div>
                         {/* AI 메시지 텍스트 */}
                         {msg.content && (
-                          <div className="bg-white text-gray-900 shadow-sm border rounded-lg px-4 py-3 mb-2">
-                            <p className="whitespace-pre-wrap break-words">
+                          <div className="card px-4 py-3 mb-2">
+                            <p className="whitespace-pre-wrap break-words text-gray-900">
                               {msg.content}
                             </p>
                           </div>
@@ -396,8 +399,14 @@ export default function Chatbot() {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-white text-gray-900 shadow-sm border rounded-lg px-4 py-3">
-                    <p className="text-gray-500">입력중...</p>
+                  <div className="card px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -408,8 +417,8 @@ export default function Chatbot() {
       </div>
 
       {/* 입력 영역 */}
-      <div className="bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+      <div className="bg-white border-t border-gray-200 shadow-lg">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
           <form onSubmit={sendMessage} className="flex gap-2">
             <input
               type="text"
@@ -417,12 +426,12 @@ export default function Chatbot() {
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="메시지를 입력하세요..."
               disabled={loading}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
             />
             <button
               type="submit"
               disabled={loading || !inputMessage.trim()}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition"
+              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
             >
               전송
             </button>

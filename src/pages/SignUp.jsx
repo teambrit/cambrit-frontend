@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import Logo from "../components/Logo";
 
 export default function SignUp() {
   const [memberType, setMemberType] = useState("student"); // 내부 상태는 소문자
@@ -58,67 +59,110 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
-          alt="Cambrit"
-          src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-          className="mx-auto h-10 w-auto"
-        />
-        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          회원가입
-        </h2>
+    <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-gradient-to-b from-campus-50 to-white">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2.5 mb-4">
+            <Logo className="w-10 h-10" />
+            <span className="text-2xl font-bold text-gray-900">CamBrit</span>
+          </Link>
+          <h2 className="text-3xl font-bold text-gray-900">
+            {memberType === "student" ? "내 커뮤니티로" : "학생 커뮤니티에"}
+            <br />
+            {memberType === "student" ? "용돈 벌기 시작!" : "효과적으로 홍보하기!"}
+          </h2>
+          <p className="mt-2 text-gray-600">
+            {memberType === "student"
+              ? "단톡방, 동아리, 학생회 등 어디서든 활동하고 수익 창출"
+              : "학생들이 직접 자신의 커뮤니티에 전달해요"}
+          </p>
+        </div>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="space-y-6">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="card p-8 space-y-6">
           {/* 회원 유형 선택 */}
-          <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-              <div className="flex items-center ps-3">
-                <input
-                  id="student"
-                  type="radio"
-                  value="student"
-                  name="member-type"
-                  checked={memberType === "student"}
-                  onChange={(e) => setMemberType(e.target.value)}
-                  className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500"
-                />
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-3">
+              가입 유형
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { id: "student", label: "학생으로 시작", icon: "🎓", desc: "활동하고 용돈 벌기" },
+                { id: "company", label: "기업으로 시작", icon: "🏢", desc: "학생들에게 홍보하기" },
+              ].map((item) => (
                 <label
-                  htmlFor="student"
-                  className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  key={item.id}
+                  className={`relative flex flex-col items-start justify-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                    memberType === item.id
+                      ? "border-primary-500 bg-primary-50"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  }`}
                 >
-                  학생회원
+                  <input
+                    type="radio"
+                    value={item.id}
+                    name="member-type"
+                    checked={memberType === item.id}
+                    onChange={(e) => setMemberType(e.target.value)}
+                    className="sr-only"
+                  />
+                  <span className="text-2xl mb-2">{item.icon}</span>
+                  <span className={`text-sm font-semibold mb-1 ${
+                    memberType === item.id ? "text-primary-700" : "text-gray-900"
+                  }`}>
+                    {item.label}
+                  </span>
+                  <span className="text-xs text-gray-500">{item.desc}</span>
                 </label>
-              </div>
-            </li>
-            <li className="w-full dark:border-gray-600">
-              <div className="flex items-center ps-3">
-                <input
-                  id="company"
-                  type="radio"
-                  value="company"
-                  name="member-type"
-                  checked={memberType === "company"}
-                  onChange={(e) => setMemberType(e.target.value)}
-                  className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500"
-                />
-                <label
-                  htmlFor="company"
-                  className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  기업회원
-                </label>
-              </div>
-            </li>
-          </ul>
+              ))}
+            </div>
+          </div>
+
+          {/* 학생/기업별 이름 입력 */}
+          {memberType === "student" && (
+            <div>
+              <label
+                htmlFor="studentName"
+                className="block text-sm font-semibold text-gray-900 mb-2"
+              >
+                이름
+              </label>
+              <input
+                id="studentName"
+                type="text"
+                value={studentName}
+                onChange={(e) => setStudentName(e.target.value)}
+                placeholder="홍길동"
+                className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
+              />
+            </div>
+          )}
+
+          {memberType === "company" && (
+            <div>
+              <label
+                htmlFor="companyName"
+                className="block text-sm font-semibold text-gray-900 mb-2"
+              >
+                회사명
+              </label>
+              <input
+                id="companyName"
+                type="text"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                placeholder="캠브릿"
+                className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
+              />
+            </div>
+          )}
 
           {/* 이메일 */}
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-900 dark:text-gray-100"
+              className="block text-sm font-semibold text-gray-900 mb-2"
             >
               이메일
             </label>
@@ -128,7 +172,8 @@ export default function SignUp() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white"
+              placeholder="your@email.com"
+              className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
             />
           </div>
 
@@ -136,7 +181,7 @@ export default function SignUp() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-900 dark:text-gray-100"
+              className="block text-sm font-semibold text-gray-900 mb-2"
             >
               비밀번호
             </label>
@@ -146,71 +191,39 @@ export default function SignUp() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white"
+              placeholder="8자 이상 입력해주세요"
+              className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
             />
           </div>
 
-          {/* 학생/기업별 이름 입력 */}
-          {memberType === "student" && (
-            <div>
-              <label
-                htmlFor="studentName"
-                className="block text-sm font-medium text-gray-900 dark:text-gray-100"
-              >
-                이름
-              </label>
-              <input
-                id="studentName"
-                type="text"
-                value={studentName}
-                onChange={(e) => setStudentName(e.target.value)}
-                className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white"
-              />
-            </div>
-          )}
-
-          {memberType === "company" && (
-            <div>
-              <label
-                htmlFor="companyName"
-                className="block text-sm font-medium text-gray-900 dark:text-gray-100"
-              >
-                회사명
-              </label>
-              <input
-                id="companyName"
-                type="text"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white"
-              />
+          {/* 에러 메시지 */}
+          {errorMsg && (
+            <div className="p-3 rounded-lg bg-red-50 border border-red-200">
+              <p className="text-sm text-red-600 flex items-center gap-2">
+                <span>⚠️</span>
+                {errorMsg}
+              </p>
             </div>
           )}
 
           {/* 회원가입 버튼 */}
           <button
-            type="button" // form submit 방지
+            type="button"
             onClick={handleSubmit}
             disabled={loading}
-            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
+            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "처리 중..." : "회원가입"}
+            {loading ? "가입 중..." : "회원가입 완료"}
           </button>
-
-          {errorMsg && (
-            <p className="text-sm text-red-600 dark:text-red-400 mt-2">
-              {errorMsg}
-            </p>
-          )}
         </div>
 
-        <p className="mt-10 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-6 text-center text-sm text-gray-600">
           이미 계정이 있으신가요?{" "}
           <Link
             to="/signin"
-            className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+            className="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
           >
-            로그인
+            로그인하기
           </Link>
         </p>
       </div>

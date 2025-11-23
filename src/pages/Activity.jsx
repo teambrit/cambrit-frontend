@@ -97,7 +97,11 @@ export default function Activity() {
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500">불러오는 중...</p>
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        </div>
       </div>
     );
 
@@ -105,31 +109,39 @@ export default function Activity() {
   if (!activity)
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500">공고 정보를 찾을 수 없습니다.</p>
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+            <span className="text-3xl">📭</span>
+          </div>
+          <p className="text-gray-500">활동 정보를 찾을 수 없습니다.</p>
+        </div>
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* 상단 기업 썸네일 */}
-      <div className="relative h-48 sm:h-64 bg-gray-200">
+      <div className="relative h-40 sm:h-48 bg-gradient-to-b from-campus-50 to-white">
         <img
           src={defaultCompanyThumb}
           alt="기업 썸네일"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover opacity-30"
         />
 
         {/* 기업 로고 + 이름 */}
-        <div className="absolute bottom-4 left-0 w-full">
-          <div className="container mx-auto px-4">
-            <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-sm">
-              <img
-                src={activity.logoImage || defaultCompanyLogo}
-                alt="기업 로고"
-                className="h-10 w-10 rounded-full object-cover"
-              />
+        <div className="absolute bottom-0 left-0 w-full">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+            <div className="inline-flex items-center gap-3 bg-white px-4 py-3 rounded-lg shadow-sm border border-gray-200">
+              <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                <img
+                  src={activity.logoImage || defaultCompanyLogo}
+                  alt="기업 로고"
+                  className="w-full h-full object-contain"
+                />
+              </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <p className="text-xs text-gray-500 mb-0.5">제공</p>
+                <h2 className="text-base font-semibold text-gray-900">
                   {activity.posterName}
                 </h2>
               </div>
@@ -139,83 +151,86 @@ export default function Activity() {
       </div>
 
       {/* 활동 정보 */}
-      <div className="container mx-auto py-8 px-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
           {activity.title}
         </h1>
 
-        <div className="mt-6 border-t border-gray-100">
-          <dl className="divide-y divide-gray-100">
-            {/* 활동 종류 */}
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
-              <dt className="text-sm font-medium text-gray-900">활동 종류</dt>
-              <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                <div className="flex flex-wrap gap-2">
-                  {(activity.tags || []).length > 0 ? (
-                    activity.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20"
-                      >
-                        {tag}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-gray-500">태그 없음</span>
-                  )}
-                </div>
-              </dd>
-            </div>
+        {/* 태그 */}
+        {(activity.tags || []).length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-8">
+            {activity.tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center px-2 py-1 rounded-md bg-campus-50 text-xs font-medium text-campus-700"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
 
-            {/* 상세 내용 */}
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
-              <dt className="text-sm font-medium text-gray-900">상세 내용</dt>
-              <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                {activity.body || "상세 내용이 없습니다."}
-              </dd>
-            </div>
+        {/* 정보 그리드 */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+          <div>
+            <p className="text-xs text-gray-500 mb-1">보상 금액</p>
+            <p className="text-lg font-semibold text-primary-600">
+              {activity.compensation
+                ? `${activity.compensation.toLocaleString()}원`
+                : "협의"}
+            </p>
+          </div>
 
-            {/* 보상 금액 */}
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
-              <dt className="text-sm font-medium text-gray-900">보상 금액</dt>
-              <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                {activity.compensation
-                  ? `${activity.compensation.toLocaleString()}원`
-                  : "미정"}
-              </dd>
-            </div>
+          <div>
+            <p className="text-xs text-gray-500 mb-1">모집 마감일</p>
+            <p className="font-semibold text-gray-900">
+              {activity.applyDueDate || "상시모집"}
+            </p>
+          </div>
 
-            {/* 활동 기간 */}
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
-              <dt className="text-sm font-medium text-gray-900">활동 기간</dt>
-              <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                {activity.activityStartDate} ~ {activity.activityEndDate}
-              </dd>
+          {activity.activityStartDate && (
+            <div>
+              <p className="text-xs text-gray-500 mb-1">활동 시작일</p>
+              <p className="font-semibold text-gray-900">
+                {activity.activityStartDate}
+              </p>
             </div>
+          )}
 
-            {/* 모집 마감일 */}
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4">
-              <dt className="text-sm font-medium text-gray-900">모집 마감일</dt>
-              <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                {activity.applyDueDate}
-              </dd>
+          {activity.activityEndDate && (
+            <div>
+              <p className="text-xs text-gray-500 mb-1">활동 종료일</p>
+              <p className="font-semibold text-gray-900">
+                {activity.activityEndDate}
+              </p>
             </div>
-          </dl>
+          )}
+        </div>
+
+        {/* 구분선 */}
+        <div className="border-t border-gray-200 my-8"></div>
+
+        {/* 상세 내용 */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">활동 내용</h3>
+          <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+            {activity.body || "상세 내용이 없습니다."}
+          </p>
         </div>
       </div>
 
       {/* 하단 지원 버튼 */}
-      <nav className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white px-4 py-3 shadow-lg">
-        <div className="container mx-auto flex justify-end">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white px-4 py-4 shadow-lg">
+        <div className="max-w-4xl mx-auto flex justify-end">
           <button
             onClick={handleApply}
             disabled={applying}
-            className="w-full sm:w-auto rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 transition disabled:bg-gray-400"
+            className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {applying ? "지원 중..." : "지원하기"}
           </button>
         </div>
-      </nav>
+      </div>
     </div>
   );
 }
