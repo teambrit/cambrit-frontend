@@ -72,100 +72,150 @@ export default function CompanyBill() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 text-center">
-        불러오는 중...
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">빌링 내역</h2>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* 헤더 */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">청구서</h1>
+          <p className="text-sm text-gray-600 mt-1">월별 청구 내역을 확인하세요</p>
+        </div>
 
-      {/* 빌링 목록 테이블 */}
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        {billings.length === 0 ? (
-          <p className="text-gray-500 text-sm">빌링 내역이 없습니다.</p>
-        ) : (
-          <table className="min-w-full border border-gray-200 text-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="border px-4 py-2 text-left">기간</th>
-                <th className="border px-4 py-2 text-left">이용 금액</th>
-                <th className="border px-4 py-2 text-left">상태</th>
-                <th className="border px-4 py-2 text-center">상세 조회</th>
-              </tr>
-            </thead>
-            <tbody>
-              {billings.map((billing) => (
-                <tr key={billing.id} className="hover:bg-gray-50">
-                  <td className="border px-4 py-2">
-                    {formatDate(billing.startedAt)} ~ {formatDate(billing.endedAt)}
-                  </td>
-                  <td className="border px-4 py-2 font-medium">
-                    {billing.totalAmount.toLocaleString()}원
-                  </td>
-                  <td className={`border px-4 py-2 font-medium ${getStatusColor(billing.status)}`}>
-                    {getStatusText(billing.status)}
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    <button
-                      onClick={() => fetchBillingDetail(billing.id)}
-                      className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                    >
-                      상세 조회
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* 빌링 상세 내역 */}
-      {selectedBilling && (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold text-gray-900">
-              {formatDate(selectedBilling.startedAt)} 상세 내역
-            </h3>
-            <button
-              onClick={() => setSelectedBilling(null)}
-              className="text-gray-600 hover:text-gray-900"
-            >
-              ✕ 닫기
-            </button>
-          </div>
-
-          {detailLoading ? (
-            <p className="text-gray-500 text-sm">불러오는 중...</p>
-          ) : selectedBilling.items && selectedBilling.items.length > 0 ? (
-            <table className="min-w-full border border-gray-200 text-sm">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border px-4 py-2 text-left">공고명</th>
-                  <th className="border px-4 py-2 text-left">학생명</th>
-                  <th className="border px-4 py-2 text-left">날짜</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedBilling.items.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2">{item.postingTitle}</td>
-                    <td className="border px-4 py-2">{item.studentName}</td>
-                    <td className="border px-4 py-2">
-                      {formatDetailDate(item.chargedDate)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* 빌링 목록 테이블 */}
+        <div className="card p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">청구 내역</h2>
+          {billings.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <span className="text-3xl">📄</span>
+              </div>
+              <p className="text-gray-500">청구 내역이 없습니다</p>
+            </div>
           ) : (
-            <p className="text-gray-500 text-sm">해당 기간에 고용한 학생이 없습니다.</p>
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">기간</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">이용 금액</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">상태</th>
+                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase">상세</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {billings.map((billing) => (
+                    <tr key={billing.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-4">
+                        <p className="text-sm text-gray-900">
+                          {formatDate(billing.startedAt)} ~ {formatDate(billing.endedAt)}
+                        </p>
+                      </td>
+                      <td className="px-4 py-4">
+                        <p className="text-sm font-semibold text-gray-900">
+                          {billing.totalAmount.toLocaleString()}원
+                        </p>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span
+                          className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${
+                            billing.status === "PENDING"
+                              ? "bg-red-50 text-red-700"
+                              : "bg-green-50 text-green-700"
+                          }`}
+                        >
+                          {billing.status === "PENDING" ? "⏳ 미결제" : "✓ 결제완료"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <button
+                          onClick={() => fetchBillingDetail(billing.id)}
+                          className="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-50 rounded hover:bg-slate-100 border border-slate-200 transition-colors"
+                        >
+                          상세 보기
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
-      )}
+
+        {/* 빌링 상세 내역 */}
+        {selectedBilling && (
+          <div className="card p-6">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {formatDate(selectedBilling.startedAt)} 상세 내역
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  총 {selectedBilling.items?.length || 0}건
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedBilling(null)}
+                className="text-sm text-slate-600 hover:text-slate-900 font-medium"
+              >
+                ✕ 닫기
+              </button>
+            </div>
+
+            {detailLoading ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500 text-sm">불러오는 중...</p>
+              </div>
+            ) : selectedBilling.items && selectedBilling.items.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="min-w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">활동명</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">학생명</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">청구일</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {selectedBilling.items.map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-4">
+                          <p className="text-sm text-gray-900">{item.postingTitle}</p>
+                        </td>
+                        <td className="px-4 py-4">
+                          <p className="text-sm text-gray-900">{item.studentName}</p>
+                        </td>
+                        <td className="px-4 py-4">
+                          <p className="text-sm text-gray-600">
+                            {formatDetailDate(item.chargedDate)}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                  <span className="text-3xl">📭</span>
+                </div>
+                <p className="text-gray-500">해당 기간에 고용한 학생이 없습니다</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

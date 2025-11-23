@@ -40,62 +40,93 @@ export default function CompanyActivity() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 text-center">
-        불러오는 중...
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mb-6 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">활동 목록</h2>
-        <Link
-          to="/company/activity/new"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-        >
-          새 활동 등록
-        </Link>
-      </div>
-
-      {activities.length === 0 ? (
-        <p className="text-gray-500 text-center py-10">
-          등록된 공고가 없습니다.
-        </p>
-      ) : (
-        <div className="space-y-4">
-          {activities.map((item) => (
-            <div
-              key={item.id}
-              className="border rounded-lg p-4 bg-white hover:shadow-md transition-shadow"
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* 헤더 */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">활동 관리</h1>
+              <p className="text-sm text-gray-600 mt-1">등록한 활동을 관리하고 지원자를 확인하세요</p>
+            </div>
+            <Link
+              to="/company/activity/new"
+              className="px-5 py-2.5 text-sm font-semibold text-white bg-slate-700 hover:bg-slate-800 rounded-lg transition-colors shadow-sm"
             >
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">
+              + 새 활동 등록
+            </Link>
+          </div>
+        </div>
+
+        {/* 활동 목록 */}
+        {activities.length === 0 ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <span className="text-3xl">📋</span>
+              </div>
+              <p className="text-gray-500 mb-4">등록된 활동이 없습니다</p>
+              <Link
+                to="/company/activity/new"
+                className="inline-block px-5 py-2.5 text-sm font-semibold text-white bg-slate-700 hover:bg-slate-800 rounded-lg transition-colors"
+              >
+                첫 활동 등록하기
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {activities.map((item) => (
+              <Link
+                key={item.id}
+                to={`/company/activity/management/${item.id}`}
+                className="card p-5 hover:shadow-md transition-shadow group"
+              >
+                <div className="flex flex-col h-full">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-slate-700 transition-colors line-clamp-2">
                     {item.title}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-2">
-                    {item.body.length > 60
-                      ? item.body.slice(0, 60) + "..."
-                      : item.body}
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-1">
+                    {item.body}
                   </p>
-                  <div className="text-sm text-gray-500">
-                    지원 마감일: {item.applyDueDate || "-"}
+
+                  <div className="space-y-2 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">보상 금액</span>
+                      <span className="font-semibold text-gray-900">
+                        {item.compensation ? `${item.compensation.toLocaleString()}원` : "협의"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">지원 마감일</span>
+                      <span className="font-semibold text-gray-900">
+                        {item.applyDueDate || "상시모집"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-gray-100">
+                    <span className="text-sm font-medium text-slate-600 group-hover:text-slate-700">
+                      관리하기 →
+                    </span>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 text-right">
-                  <Link
-                    to={`/company/activity/management/${item.id}`}
-                    className="text-green-600 text-sm hover:text-green-800"
-                  >
-                    관리
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

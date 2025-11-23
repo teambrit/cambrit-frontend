@@ -94,167 +94,217 @@ export default function CompanyActivityManagement() {
 
   if (loading)
     return (
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 text-center">
-        불러오는 중...
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        </div>
       </div>
     );
 
   if (!activity)
     return (
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 text-center text-gray-500">
-        공고 정보를 찾을 수 없습니다.
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+            <span className="text-3xl">📭</span>
+          </div>
+          <p className="text-gray-500">활동 정보를 찾을 수 없습니다.</p>
+        </div>
       </div>
     );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      {/* 상단 헤더: 제목 + 뒤로가기 */}
-      <div className="mb-6 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">
-          공고 관리: {activity.title}
-        </h2>
-        <Link
-          to="/company/activity"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
-        >
-          목록으로 돌아가기
-        </Link>
-      </div>
-
-      {/* 공고 상세정보 */}
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">
-          공고 상세 정보
-        </h3>
-        <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
-          <div>
-            <strong>제목:</strong> {activity.title}
-          </div>
-          <div>
-            <strong>상태:</strong> {activity.status}
-          </div>
-          <div>
-            <strong>작성자:</strong> {activity.posterName} (
-            {activity.posterEmail})
-          </div>
-          <div>
-            <strong>보상금:</strong> {activity.compensation}원
-          </div>
-          <div>
-            <strong>지원 마감일:</strong> {activity.applyDueDate}
-          </div>
-          <div>
-            <strong>활동 기간:</strong>{" "}
-            {activity.activityStartDate} ~ {activity.activityEndDate}
-          </div>
-          <div className="col-span-2">
-            <strong>활동 내용:</strong>
-            <p className="mt-1 text-gray-800">{activity.body}</p>
-          </div>
-          <div className="col-span-2">
-            <strong>활동 태그:</strong>{" "}
-            {activity.tags && activity.tags.length > 0
-              ? activity.tags.join(", ")
-              : "-"}
-          </div>
-        </div>
-      </div>
-
-      {/* 지원자 목록 */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-gray-900">지원자 목록</h3>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={handleConfirmSelection}
-              className={`bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 disabled:opacity-50`}
-              disabled={selectedIds.length === 0}
-            >
-              선발 확정 ({selectedIds.length})
-            </button>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* 헤더 */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <Link
+                to="/company/activity"
+                className="text-sm text-slate-600 hover:text-slate-900 mb-2 inline-flex items-center"
+              >
+                ← 목록으로
+              </Link>
+              <h1 className="text-3xl font-bold text-gray-900">{activity.title}</h1>
+            </div>
           </div>
         </div>
 
-        {applicants.length === 0 ? (
-          <p className="text-gray-500 text-sm">지원자가 없습니다.</p>
-        ) : (
-          <table className="min-w-full border border-gray-200 text-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="border px-4 py-2 text-left">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.length === applicants.length && applicants.length > 0}
-                    onChange={toggleSelectAll}
-                  />
-                </th>
-                <th className="border px-4 py-2 text-left">ID</th>
-                <th className="border px-4 py-2 text-left">이름</th>
-                <th className="border px-4 py-2 text-left">이메일</th>
-                <th className="border px-4 py-2 text-left">학생정보</th>
-                <th className="border px-4 py-2 text-left">활동인증파일</th>
-                <th className="border px-4 py-2 text-left">상태</th>
-                <th className="border px-4 py-2 text-left">지원일</th>
-              </tr>
-            </thead>
-            <tbody>
-              {applicants.map((a) => (
-                <tr key={a.id} className="hover:bg-gray-50">
-                  <td className="border px-4 py-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(a.id)}
-                      onChange={() => toggleSelect(a.id)}
-                    />
-                  </td>
-                  <td className="border px-4 py-2">{a.id}</td>
-                  <td className="border px-4 py-2">{a.applicantName}</td>
-                  <td className="border px-4 py-2">{a.applicantEmail}</td>
-                  <td className="border px-4 py-2">
-                    {a.applicantAuthorizationStatus === "APPROVED" && (
-                      <div className="text-sm text-gray-700">
-                        {a.applicantUniversity && <div>{a.applicantUniversity}</div>}
-                        {a.applicantMajor && <div>{a.applicantMajor}</div>}
-                      </div>
-                    )}
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    {a.verificationFile ? (
-                      <a
-                        href={a.verificationFile.startsWith("data:") || a.verificationFile.startsWith("http")
-                          ? a.verificationFile
-                          : `data:image/jpeg;base64,${a.verificationFile}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download
-                        className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded hover:bg-blue-100 border border-blue-200"
-                      >
-                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        다운로드
-                      </a>
-                    ) : (
-                      <span className="text-gray-400 text-sm">
-                        {a.status === "APPROVED" ? "업로드 대기" : "미업로드"}
-                      </span>
-                    )}
-                  </td>
-                  <td className="border px-4 py-2">
-                    {a.status === "PENDING"
-                      ? "대기"
-                      : a.status === "APPROVED"
-                      ? "선발"
-                      : "탈락"}
-                  </td>
-                  <td className="border px-4 py-2">
-                    {new Date(a.createdAt).toLocaleDateString("ko-KR")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        {/* 활동 상세 정보 */}
+        <div className="card p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">활동 정보</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">보상 금액</p>
+              <p className="text-lg font-semibold text-gray-900">
+                {activity.compensation ? `${activity.compensation.toLocaleString()}원` : "협의"}
+              </p>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">지원 마감일</p>
+              <p className="text-lg font-semibold text-gray-900">
+                {activity.applyDueDate || "상시모집"}
+              </p>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">활동 시작일</p>
+              <p className="text-lg font-semibold text-gray-900">
+                {activity.activityStartDate || "-"}
+              </p>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">활동 종료일</p>
+              <p className="text-lg font-semibold text-gray-900">
+                {activity.activityEndDate || "-"}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-xs text-gray-500 mb-2">활동 내용</p>
+            <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">
+              {activity.body}
+            </p>
+          </div>
+
+          {activity.tags && activity.tags.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <p className="text-xs text-gray-500 mb-2">태그</p>
+              <div className="flex flex-wrap gap-1.5">
+                {activity.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center px-2 py-1 rounded-md bg-campus-50 text-xs font-medium text-campus-700"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 지원자 목록 */}
+        <div className="card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">지원자 목록</h2>
+              <p className="text-sm text-gray-600 mt-1">총 {applicants.length}명</p>
+            </div>
+            {selectedIds.length > 0 && (
+              <button
+                onClick={handleConfirmSelection}
+                className="px-4 py-2 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-sm"
+              >
+                선발 확정 ({selectedIds.length}명)
+              </button>
+            )}
+          </div>
+
+          {applicants.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <span className="text-3xl">👥</span>
+              </div>
+              <p className="text-gray-500">아직 지원자가 없습니다</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="px-4 py-3 text-left">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.length === applicants.length && applicants.length > 0}
+                        onChange={toggleSelectAll}
+                        className="w-4 h-4"
+                      />
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">이름</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">이메일</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">학교</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">전공</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">상태</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">인증파일</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">지원일</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {applicants.map((a) => (
+                    <tr key={a.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(a.id)}
+                          onChange={() => toggleSelect(a.id)}
+                          className="w-4 h-4"
+                        />
+                      </td>
+                      <td className="px-4 py-4">
+                        <p className="text-sm font-medium text-gray-900">{a.applicantName}</p>
+                      </td>
+                      <td className="px-4 py-4">
+                        <p className="text-sm text-gray-600">{a.applicantEmail}</p>
+                      </td>
+                      <td className="px-4 py-4">
+                        <p className="text-sm text-gray-900">{a.applicantUniversity || "-"}</p>
+                      </td>
+                      <td className="px-4 py-4">
+                        <p className="text-sm text-gray-900">{a.applicantMajor || "-"}</p>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span
+                          className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${
+                            a.status === "APPROVED"
+                              ? "bg-green-50 text-green-700"
+                              : a.status === "REJECTED"
+                              ? "bg-red-50 text-red-700"
+                              : "bg-blue-50 text-blue-700"
+                          }`}
+                        >
+                          {a.status === "APPROVED" ? "✓ 선발" : a.status === "REJECTED" ? "✗ 탈락" : "⏳ 검토중"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        {a.verificationFile ? (
+                          <a
+                            href={
+                              a.verificationFile.startsWith("data:") || a.verificationFile.startsWith("http")
+                                ? a.verificationFile
+                                : `data:image/jpeg;base64,${a.verificationFile}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            download
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-slate-700 bg-slate-50 rounded hover:bg-slate-100 border border-slate-200 transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            다운로드
+                          </a>
+                        ) : (
+                          <span className="text-xs text-gray-400">
+                            {a.status === "APPROVED" ? "대기중" : "-"}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-4">
+                        <p className="text-sm text-gray-600">
+                          {new Date(a.createdAt).toLocaleDateString("ko-KR")}
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

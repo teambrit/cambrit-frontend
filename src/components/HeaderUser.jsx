@@ -31,16 +31,16 @@ export default function HeaderUser() {
                   내 지원
                 </Link>
                 <Link
-                  to="/chatbot"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  💬 챗봇
-                </Link>
-                <Link
                   to="/mypage"
                   className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   마이페이지
+                </Link>
+                <Link
+                  to="/chatbot"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  💬 챗봇
                 </Link>
                 <button
                   onClick={() => logout(navigate)}
