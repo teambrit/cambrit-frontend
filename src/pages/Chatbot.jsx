@@ -90,7 +90,7 @@ export default function Chatbot() {
       const { functionName, data } = result;
 
       // get_posting_list: 활동 목록 (가로 슬라이딩)
-      if (functionName === "get_posting_list" && data?.content) {
+      if ((functionName === "get_posting_list" || functionName === "get_my_postings") && data?.content) {
         return (
           <div key={idx} className="mt-3">
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
