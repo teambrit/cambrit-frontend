@@ -107,6 +107,24 @@ export default function Chatbot() {
         );
       }
 
+      // filter_postings: 필터링된 활동 목록 (가로 슬라이딩)
+      if (functionName === "filter_postings" && Array.isArray(data)) {
+        return (
+          <div key={idx} className="mt-3">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              {data.map((posting) => (
+                <div key={posting.id} className="flex-shrink-0 w-80">
+                  <PostingCard posting={posting} />
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              총 {data.length}개의 활동
+            </p>
+          </div>
+        );
+      }
+
       // get_posting_detail: 활동 상세
       if (functionName === "get_posting_detail" && data) {
         return (
