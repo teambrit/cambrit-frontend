@@ -174,7 +174,6 @@ export default function MyPage() {
           // 인증 완료
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 text-green-700 font-semibold mb-6">
-              <span>✓</span>
               <span>인증 완료</span>
             </div>
             <div className="space-y-4">
@@ -196,7 +195,6 @@ export default function MyPage() {
           // 승인 대기
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 font-semibold mb-6">
-              <span>⏳</span>
               <span>승인 대기 중</span>
             </div>
             <div className="space-y-4">
@@ -218,7 +216,6 @@ export default function MyPage() {
           // 인증 거절
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-red-700 font-semibold mb-2">
-              <span>✗</span>
               <span>인증 거절</span>
             </div>
             <p className="text-gray-600 mb-6 text-sm">인증이 거절되었습니다. 다시 제출해주세요.</p>
@@ -269,7 +266,6 @@ export default function MyPage() {
           // 최초 미인증 상태
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-gray-700 font-semibold mb-6">
-              <span>·</span>
               <span>미인증</span>
             </div>
             <div className="space-y-4">
@@ -367,7 +363,7 @@ export default function MyPage() {
                   </svg>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,image/svg+xml,.svg"
                     onChange={handleProfileImageChange}
                     className="hidden"
                   />
@@ -421,8 +417,8 @@ export default function MyPage() {
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
                 />
               ) : (
-                <p className="text-gray-900 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                  {studentInfo.phone || "미입력"}
+                <p className={`p-3 bg-gray-50 rounded-lg border border-gray-200 ${studentInfo.phone ? 'text-gray-900' : 'text-gray-400'}`}>
+                  {studentInfo.phone || "-"}
                 </p>
               )}
             </div>
@@ -441,8 +437,8 @@ export default function MyPage() {
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none"
                 />
               ) : (
-                <p className="text-gray-900 p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] whitespace-pre-wrap">
-                  {studentInfo.bio || "자기소개가 없습니다"}
+                <p className={`p-3 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] whitespace-pre-wrap ${studentInfo.bio ? 'text-gray-900' : 'text-gray-400'}`}>
+                  {studentInfo.bio || "-"}
                 </p>
               )}
             </div>

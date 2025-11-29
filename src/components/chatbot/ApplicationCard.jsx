@@ -17,11 +17,11 @@ export default function ApplicationCard({ application }) {
   const getStatusText = (status) => {
     switch (status) {
       case "APPROVED":
-        return "✓ 선발됨";
+        return "선발됨";
       case "REJECTED":
-        return "✗ 탈락";
+        return "탈락";
       default:
-        return "· 지원 완료";
+        return "지원 완료";
     }
   };
 

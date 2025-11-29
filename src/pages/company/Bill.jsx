@@ -133,7 +133,7 @@ export default function CompanyBill() {
                               : "bg-green-50 text-green-700"
                           }`}
                         >
-                          {billing.status === "PENDING" ? "⏳ 미결제" : "✓ 결제완료"}
+                          {billing.status === "PENDING" ? "미결제" : "결제완료"}
                         </span>
                       </td>
                       <td className="px-4 py-4 text-center">

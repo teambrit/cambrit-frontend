@@ -13,11 +13,11 @@ export default function ApplicantCard({ applicant }) {
   const getStatusText = (status) => {
     switch (status) {
       case "APPROVED":
-        return "✓ 선발됨";
+        return "선발됨";
       case "REJECTED":
-        return "✗ 탈락";
+        return "탈락";
       default:
-        return "⏳ 검토중";
+        return "검토중";
     }
   };
 
@@ -37,13 +37,13 @@ export default function ApplicantCard({ applicant }) {
   const getAuthStatusText = (status) => {
     switch (status) {
       case "APPROVED":
-        return "✓ 인증됨";
+        return "인증됨";
       case "PENDING":
-        return "⏳ 인증대기";
+        return "인증대기";
       case "REJECTED":
-        return "✗ 인증거절";
+        return "인증거절";
       case "NONE":
-        return "· 미인증";
+        return "미인증";
       default:
         return status;
     }

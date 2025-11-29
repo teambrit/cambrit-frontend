@@ -266,7 +266,7 @@ export default function CompanyActivityManagement() {
                               : "bg-blue-50 text-blue-700"
                           }`}
                         >
-                          {a.status === "APPROVED" ? "✓ 선발" : a.status === "REJECTED" ? "✗ 탈락" : "⏳ 검토중"}
+                          {a.status === "APPROVED" ? "선발" : a.status === "REJECTED" ? "탈락" : "검토중"}
                         </span>
                       </td>
                       <td className="px-4 py-4">

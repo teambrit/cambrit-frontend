@@ -36,7 +36,7 @@ export default function PostingDetailCard({ posting }) {
                   : "bg-gray-100 text-gray-700"
               }`}
             >
-              {posting.status === "ACTIVE" ? "✓ 모집중" : "· 마감"}
+              {posting.status === "ACTIVE" ? "모집중" : "마감"}
             </span>
           </div>
         </div>

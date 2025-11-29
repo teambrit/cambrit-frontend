@@ -70,9 +70,9 @@ export default function UserProfileCard({ user }) {
           <p className="text-gray-500 text-xs mb-2">계정 상태</p>
           <p className="font-semibold">
             {user.isAuthorized ? (
-              <span className="text-green-600">✓ 인증됨</span>
+              <span className="text-green-600">인증됨</span>
             ) : (
-              <span className="text-gray-600">· 미인증</span>
+              <span className="text-gray-600">미인증</span>
             )}
           </p>
         </div>

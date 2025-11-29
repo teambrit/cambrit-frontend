@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
-import { Link, useNavigate } from "react-router-dom";
-import defaultCompanyLogo from "../assets/default-company-logo.png";
-import { formatImageUrl } from "../utils/imageUtils";
+import { useNavigate } from "react-router-dom";
 
 export default function Applications() {
   const [applications, setApplications] = useState([]);
@@ -29,6 +27,10 @@ export default function Applications() {
         if (!res.ok) throw new Error("지원 내역을 불러오지 못했습니다.");
 
         const data = await res.json();
+        console.log("지원 내역 데이터:", data);
+        if (data.length > 0) {
+          console.log("첫 번째 지원 내역 상세:", data[0]);
+        }
         setApplications(data);
       } catch (err) {
         console.error("Error:", err);
@@ -124,35 +126,41 @@ export default function Applications() {
               applications.map((app) => (
                 <div
                   key={app.id}
-                  className="card p-6 hover:shadow-md transition-shadow"
+                  onClick={() => navigate(`/activity/${app.postingId}`)}
+                  className="card p-5 hover:shadow-md transition-shadow cursor-pointer"
                 >
-                  {/* 활동 제목 + 회사명 */}
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
-                      <img
-                        src={formatImageUrl(app.logoImage || app.posterLogoImage) || defaultCompanyLogo}
-                        alt="기업 로고"
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
+                  {/* 헤더: 제목 + 상태 */}
+                  <div className="flex items-start justify-between gap-4 mb-3">
                     <div className="flex-1 min-w-0">
-                      <Link
-                        to={`/activity/${app.postingId}`}
-                        className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors"
-                      >
+                      <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors mb-1">
                         {app.postingTitle}
-                      </Link>
-                      <p className="text-sm text-gray-500 mt-0.5">{app.posterName}</p>
+                      </h3>
+                      <p className="text-sm text-gray-600">{app.posterName}</p>
                     </div>
+                    <span
+                      className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${
+                        app.status === "APPROVED"
+                          ? "bg-green-50 text-green-700"
+                          : app.status === "REJECTED"
+                          ? "bg-red-50 text-red-700"
+                          : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {app.status === "APPROVED"
+                        ? "선발됨"
+                        : app.status === "REJECTED"
+                        ? "탈락"
+                        : "지원 완료"}
+                    </span>
                   </div>
 
                   {/* 태그 */}
                   {app.postingTags && app.postingTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-4">
+                    <div className="flex flex-wrap gap-1.5 mb-3">
                       {app.postingTags.map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center px-2 py-1 rounded-md bg-campus-50 text-xs font-medium text-campus-700"
+                          className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-xs text-gray-700"
                         >
                           {tag}
                         </span>
@@ -160,41 +168,25 @@ export default function Applications() {
                     </div>
                   )}
 
-                  {/* 지원 상태 및 날짜 */}
-                  <div className="pt-4 border-t border-gray-100 space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">지원 상태</span>
-                      <span
-                        className={`font-semibold px-3 py-1 rounded-full text-xs ${
-                          app.status === "APPROVED"
-                            ? "bg-green-50 text-green-700"
-                            : app.status === "REJECTED"
-                            ? "bg-red-50 text-red-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {app.status === "APPROVED"
-                          ? "✓ 선발됨"
-                          : app.status === "REJECTED"
-                          ? "✗ 탈락"
-                          : "· 지원 완료"}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">지원일</span>
-                      <span className="font-medium text-gray-900">
-                        {new Date(app.createdAt).toLocaleDateString("ko-KR")}
-                      </span>
-                    </div>
+                  {/* 지원일 */}
+                  <div className="flex items-center gap-2 text-xs text-gray-500 border-t border-gray-100 pt-3">
+                    <span>지원일:</span>
+                    <span>{new Date(app.createdAt).toLocaleDateString("ko-KR")}</span>
                   </div>
 
                   {/* 파일 업로드 버튼 (선발된 경우에만 표시) */}
                   {app.status === "APPROVED" && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div
+                      className="mt-4 pt-4 border-t border-gray-200"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <label className="block">
-                        <span className="text-sm font-semibold text-gray-900 mb-2 block">
+                        <span className="text-sm font-semibold text-gray-900 mb-1 block">
                           📎 인증 파일 업로드
                         </span>
+                        <p className="text-xs text-gray-500 mb-3">
+                          활동 수행 후 인증 사진을 업로드하면 기업에서 확인 후 보상금을 입금합니다.
+                        </p>
                         <div className="flex items-center gap-2">
                           <input
                             type="file"

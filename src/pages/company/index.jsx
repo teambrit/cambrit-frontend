@@ -19,9 +19,9 @@ export default function CompanyHome() {
   const [logoFile, setLogoFile] = useState(null);
   const [backgroundFile, setBackgroundFile] = useState(null);
 
-  const [stats] = useState({
-    jobCount: 5,
-    applicantCount: 42,
+  const [stats, setStats] = useState({
+    jobCount: 0,
+    applicantCount: 0,
   });
 
   const token = localStorage.getItem("token");
@@ -77,6 +77,63 @@ export default function CompanyHome() {
     if (token) fetchCompanyInfo();
   }, [token]);
 
+  // 통계 데이터 불러오기
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!token) return;
+
+      try {
+        // 1. 내 정보에서 userId 가져오기
+        const meRes = await fetch(`${API_BASE_URL}/user/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!meRes.ok) return;
+        const meData = await meRes.json();
+        const myUserId = meData.id;
+
+        // 2. 내가 등록한 공고 목록 가져오기
+        const postingsRes = await fetch(
+          `${API_BASE_URL}/posting/page?posterId=${myUserId}&size=1000`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (!postingsRes.ok) return;
+        const postingsData = await postingsRes.json();
+        const myPostings = postingsData.content || [];
+        const jobCount = postingsData.totalElements || myPostings.length;
+
+        // 3. 각 공고의 지원자 수 합산
+        let totalApplicants = 0;
+        for (const posting of myPostings) {
+          try {
+            const applicantsRes = await fetch(
+              `${API_BASE_URL}/posting/${posting.id}/applications`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+            if (applicantsRes.ok) {
+              const applicantsData = await applicantsRes.json();
+              totalApplicants += applicantsData.length;
+            }
+          } catch (err) {
+            console.error(`공고 ${posting.id} 지원자 조회 실패:`, err);
+          }
+        }
+
+        setStats({
+          jobCount,
+          applicantCount: totalApplicants,
+        });
+      } catch (error) {
+        console.error("통계 데이터 로드 실패:", error);
+      }
+    };
+
+    fetchStats();
+  }, [token]);
+
   const handleInputChange = (field, value) => {
     setCompany((prev) => ({
       ...prev,
@@ -87,6 +144,14 @@ export default function CompanyHome() {
   const handleImageUpload = (field, e) => {
     const file = e.target.files[0];
     if (file) {
+      console.log("선택한 파일:", file.name, "타입:", file.type, "크기:", file.size);
+
+      // SVG 파일 타입 확인
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
+
       const imageUrl = URL.createObjectURL(file);
       setCompany((prev) => ({
         ...prev,
@@ -114,12 +179,15 @@ export default function CompanyHome() {
 
       // 이미지 파일이 선택되었으면 추가
       if (logoFile) {
+        console.log("로고 파일 업로드:", logoFile.name, logoFile.type, logoFile.size);
         formData.append("logoImage", logoFile);
       }
       if (backgroundFile) {
+        console.log("배경 파일 업로드:", backgroundFile.name, backgroundFile.type, backgroundFile.size);
         formData.append("backgroundImage", backgroundFile);
       }
 
+      console.log("FormData 전송 시작...");
       const res = await fetch(`${API_BASE_URL}/user/company/profile`, {
         method: "PUT",
         headers: {
@@ -213,7 +281,7 @@ export default function CompanyHome() {
                 썸네일 변경
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/*,image/svg+xml,.svg"
                   onChange={(e) => handleImageUpload("thumbnailImage", e)}
                   className="hidden"
                 />
@@ -235,7 +303,7 @@ export default function CompanyHome() {
                 로고 변경
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/*,image/svg+xml,.svg"
                   onChange={(e) => handleImageUpload("profileImage", e)}
                   className="hidden"
                 />

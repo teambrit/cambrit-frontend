@@ -17,13 +17,13 @@ export default function BillingDetailCard({ billing }) {
   const getStatusText = (status) => {
     switch (status) {
       case "PENDING":
-        return "⏳ 대기중";
+        return "대기중";
       case "PAID":
-        return "✓ 결제완료";
+        return "결제완료";
       case "CANCELLED":
-        return "✗ 취소됨";
+        return "취소됨";
       case "OVERDUE":
-        return "⚠ 기한초과";
+        return "기한초과";
       default:
         return status;
     }
