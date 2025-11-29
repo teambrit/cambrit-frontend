@@ -210,11 +210,23 @@ export default function Applications() {
                 </div>
               ))
             ) : (
-              <div className="card p-16 text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-                  <span className="text-3xl">📭</span>
+              <div className="card p-12 sm:p-16 text-center">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary-50 mb-6">
+                  <span className="text-5xl">📋</span>
                 </div>
-                <p className="text-gray-500">아직 지원한 활동이 없습니다.</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  아직 지원한 활동이 없어요
+                </h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  다양한 대외활동을 탐색하고 지원해보세요!
+                </p>
+                <button
+                  onClick={() => navigate('/')}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                >
+                  <span>활동 둘러보기</span>
+                  <span>→</span>
+                </button>
               </div>
             )}
           </div>
