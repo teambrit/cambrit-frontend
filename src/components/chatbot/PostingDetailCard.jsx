@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { formatImageUrl } from "../../utils/imageUtils";
 
 export default function PostingDetailCard({ posting }) {
   return (
@@ -13,7 +14,7 @@ export default function PostingDetailCard({ posting }) {
             {posting.logoImage && (
               <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
                 <img
-                  src={posting.logoImage}
+                  src={formatImageUrl(posting.logoImage)}
                   alt="기업 로고"
                   className="w-full h-full object-contain"
                 />

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { API_BASE_URL } from "../config";
 import defaultCompanyLogo from "../assets/default-company-logo.png";
+import { formatImageUrl } from "../utils/imageUtils";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -15,6 +16,7 @@ export default function Home() {
         const res = await fetch(`${API_BASE_URL}/posting/page?page=${page}&size=${size}`);
         if (!res.ok) throw new Error("데이터를 불러오지 못했습니다.");
         const data = await res.json();
+        console.log(data);
         setPosts(data.content || []);
         setTotalPages(data.totalPages || 0);
       } catch (err) {
@@ -85,7 +87,7 @@ export default function Home() {
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
                     <img
-                      src={post.logoImage || defaultCompanyLogo}
+                      src={formatImageUrl(post.logoImage) || defaultCompanyLogo}
                       alt={`${post.posterName} Logo`}
                       className="w-full h-full object-contain"
                     />

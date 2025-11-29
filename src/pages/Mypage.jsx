@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import defaultProfile from "../assets/default-user.png";
 import { API_BASE_URL } from "../config";
+import { formatImageUrl } from "../utils/imageUtils";
 
 export default function MyPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -354,7 +355,7 @@ export default function MyPage() {
           <div className="flex flex-col items-center mb-10">
             <div className="relative">
               <img
-                src={studentInfo.profileImage || defaultProfile}
+                src={formatImageUrl(studentInfo.profileImage) || defaultProfile}
                 alt="프로필 이미지"
                 className="w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-sm"
               />

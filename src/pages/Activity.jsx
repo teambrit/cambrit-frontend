@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import defaultCompanyThumb from "../assets/default-company-thumbnail.png";
 import defaultCompanyLogo from "../assets/default-company-logo.png";
+import { formatImageUrl } from "../utils/imageUtils";
 
 export default function Activity() {
   const { id } = useParams();
@@ -134,7 +135,7 @@ export default function Activity() {
             <div className="inline-flex items-center gap-3 bg-white px-4 py-3 rounded-lg shadow-sm border border-gray-200">
               <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
                 <img
-                  src={activity.logoImage || defaultCompanyLogo}
+                  src={formatImageUrl(activity.logoImage) || defaultCompanyLogo}
                   alt="기업 로고"
                   className="w-full h-full object-contain"
                 />

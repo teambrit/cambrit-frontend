@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { formatImageUrl } from "../../utils/imageUtils";
 
 export default function UserProfileCard({ user }) {
   const getRoleText = (role) => {
@@ -47,7 +48,7 @@ export default function UserProfileCard({ user }) {
       <div className="flex items-start gap-4 mb-6">
         {user.profileImage && (
           <img
-            src={user.profileImage}
+            src={formatImageUrl(user.profileImage)}
             alt="프로필"
             className="w-20 h-20 rounded-full object-cover border-4 border-gray-100"
           />

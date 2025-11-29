@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import defaultLogo from "../../assets/default-company-logo.png";
 import defaultThumbnail from "../../assets/default-company-thumbnail.png";
 import { API_BASE_URL } from "../../config";
+import { formatImageUrl } from "../../utils/imageUtils";
 
 export default function CompanyHome() {
   const [isEditing, setIsEditing] = useState(false);

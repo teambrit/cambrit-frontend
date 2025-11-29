@@ -1,12 +1,24 @@
 import { Link } from "react-router-dom";
+import defaultCompanyLogo from "../../assets/default-company-logo.png";
+import { formatImageUrl } from "../../utils/imageUtils";
 
 export default function PostingCard({ posting }) {
   return (
     <Link to={`/activity/${posting.id}`} target="_blank" rel="noopener noreferrer" className="block">
       <div className="card p-5 hover:shadow-md transition-shadow h-full">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3 hover:text-primary-600 transition-colors line-clamp-2">
-          {posting.title}
-        </h3>
+        {/* 회사 로고 + 제목 */}
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+            <img
+              src={formatImageUrl(posting.logoImage) || defaultCompanyLogo}
+              alt={`${posting.posterName} Logo`}
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2 flex-1">
+            {posting.title}
+          </h3>
+        </div>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-500">{posting.posterName}</span>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
 import { Link, useNavigate } from "react-router-dom";
 import defaultCompanyLogo from "../assets/default-company-logo.png";
+import { formatImageUrl } from "../utils/imageUtils";
 
 export default function Applications() {
   const [applications, setApplications] = useState([]);
@@ -129,7 +130,7 @@ export default function Applications() {
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
                       <img
-                        src={defaultCompanyLogo}
+                        src={formatImageUrl(app.logoImage || app.posterLogoImage) || defaultCompanyLogo}
                         alt="기업 로고"
                         className="w-full h-full object-contain"
                       />
